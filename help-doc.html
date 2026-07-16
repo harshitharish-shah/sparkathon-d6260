@@ -1,0 +1,912 @@
+<title>Promotion Intelligence — Help &amp; Reference Guide</title>
+<style>
+:root{
+  --paper:#ffffff; --paper-2:#f2f0ea; --panel:#ffffff; --line:#e2ddcd; --line-2:#cec7b3;
+  --ink:#201e1a; --ink-2:#5c5748; --ink-3:#8a8471;
+  --user:#4b3fd6; --user-soft:#4b3fd612; --user-line:#4b3fd63a;
+  --tech:#0f6e63; --tech-soft:#0f6e6312; --tech-line:#0f6e633a;
+  --live:#1f7a3d; --live-bg:#1f7a3d14; --partial:#a15c06; --partial-bg:#a15c0614;
+  --proj:#5b5fb0; --proj-bg:#5b5fb014; --future:#8a8471; --future-bg:#8a847116; --block:#a3312c; --block-bg:#a3312c14;
+  --mono:ui-monospace,"Cascadia Code","SF Mono",Consolas,monospace;
+  --sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --serif:Charter,"Iowan Old Style","Palatino Linotype",Georgia,"Cambria",serif;
+  --shadow:0 1px 2px rgba(40,35,20,.06),0 8px 24px rgba(40,35,20,.07);
+}
+:root[data-theme="dark"], @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#171613; --paper-2:#1e1c18; --panel:#1c1a16; --line:#38352c; --line-2:#4a4638;
+  --ink:#eee9dc; --ink-2:#bcb5a0; --ink-3:#847d68;
+  --user:#a29bff; --user-soft:#a29bff16; --user-line:#a29bff40;
+  --tech:#5fd6c4; --tech-soft:#5fd6c414; --tech-line:#5fd6c440;
+  --live:#5fd68a; --live-bg:#5fd68a1a; --partial:#e0a94a; --partial-bg:#e0a94a1a;
+  --proj:#a8abe8; --proj-bg:#a8abe81a; --future:#948d78; --future-bg:#948d781c; --block:#e2837d; --block-bg:#e2837d1a;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.45);
+}}
+:root[data-theme="dark"]{
+  --paper:#171613; --paper-2:#1e1c18; --panel:#1c1a16; --line:#38352c; --line-2:#4a4638;
+  --ink:#eee9dc; --ink-2:#bcb5a0; --ink-3:#847d68;
+  --user:#a29bff; --user-soft:#a29bff16; --user-line:#a29bff40;
+  --tech:#5fd6c4; --tech-soft:#5fd6c414; --tech-line:#5fd6c440;
+  --live:#5fd68a; --live-bg:#5fd68a1a; --partial:#e0a94a; --partial-bg:#e0a94a1a;
+  --proj:#a8abe8; --proj-bg:#a8abe81a; --future:#948d78; --future-bg:#948d781c; --block:#e2837d; --block-bg:#e2837d1a;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.45);
+}
+:root[data-theme="light"]{
+  --paper:#ffffff; --paper-2:#f2f0ea; --panel:#ffffff; --line:#e2ddcd; --line-2:#cec7b3;
+  --ink:#201e1a; --ink-2:#5c5748; --ink-3:#8a8471;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:15.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+::selection{background:var(--user-soft)}
+
+a{color:var(--user)}
+:root[data-theme="dark"] a, .tech a{color:var(--tech)}
+
+.shell{display:grid;grid-template-columns:280px 1fr;max-width:1240px;margin:0 auto}
+@media(max-width:880px){.shell{grid-template-columns:1fr}.toc{display:none}}
+
+/* ---------- masthead ---------- */
+.masthead{grid-column:1/-1;padding:52px 40px 30px;border-bottom:1px solid var(--line);position:relative}
+.masthead .kicker{font-family:var(--sans);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:14px}
+.masthead h1{font-family:var(--serif);font-size:38px;font-weight:600;letter-spacing:-.01em;text-wrap:balance;max-width:800px}
+.masthead p.sub{font-family:var(--sans);color:var(--ink-2);font-size:14.5px;margin-top:12px;max-width:620px}
+.parts{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap}
+.part-chip{font-family:var(--sans);font-size:12.5px;font-weight:650;letter-spacing:.01em;padding:9px 16px;border-radius:99px;border:1px solid var(--line-2);cursor:pointer;background:var(--panel);color:var(--ink-2);display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.part-chip.a{border-color:var(--user-line);color:var(--user)}
+.part-chip.b{border-color:var(--tech-line);color:var(--tech)}
+.part-chip .n{font-family:var(--mono);font-size:10.5px;opacity:.75}
+
+/* ---------- toc ---------- */
+.toc{grid-column:1;padding:34px 26px 60px 40px;position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto}
+.toc .grp{font-family:var(--sans);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin:22px 0 8px;color:var(--ink-3)}
+.toc .grp:first-child{margin-top:0}
+.toc .grp.a{color:var(--user)}.toc .grp.b{color:var(--tech)}
+.toc a{display:block;font-family:var(--sans);font-size:13px;color:var(--ink-2);text-decoration:none;padding:5px 0 5px 13px;border-left:2px solid transparent;line-height:1.4}
+.toc a:hover{color:var(--ink);border-left-color:var(--line-2)}
+.toc a.sub{font-size:12px;color:var(--ink-3);padding-left:24px}
+
+/* ---------- main ---------- */
+main{grid-column:2;padding:44px 44px 120px 40px;max-width:800px}
+@media(max-width:880px){main{grid-column:1;padding:34px 22px 100px}}
+
+.part-divider{display:flex;align-items:center;gap:16px;margin:70px 0 36px}
+.part-divider:first-of-type{margin-top:0}
+.part-divider .lbl{font-family:var(--sans);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;white-space:nowrap}
+.part-divider.a .lbl{color:var(--user)}.part-divider.b .lbl{color:var(--tech)}
+.part-divider .ln{flex:1;height:1px;background:var(--line)}
+
+h2{font-family:var(--serif);font-size:27px;font-weight:600;letter-spacing:-.01em;margin:52px 0 6px;text-wrap:balance;scroll-margin-top:20px}
+h2:first-of-type{margin-top:0}
+h2 .num{font-family:var(--mono);font-size:14px;color:var(--ink-3);font-weight:400;margin-right:10px}
+h3{font-family:var(--sans);font-size:15px;font-weight:700;margin:30px 0 10px;color:var(--ink);scroll-margin-top:20px}
+h4{font-family:var(--sans);font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-2);margin:22px 0 9px}
+p{margin:12px 0;max-width:66ch}
+p.lede{font-family:var(--sans);font-size:16px;color:var(--ink-2);max-width:64ch;margin-top:10px}
+ul,ol{margin:12px 0 12px 22px;max-width:64ch}
+li{margin:5px 0}
+strong{font-weight:650}
+code{font-family:var(--mono);font-size:.86em;background:var(--paper-2);padding:1.5px 5px;border-radius:4px}
+
+.section{scroll-margin-top:20px}
+
+/* callouts */
+.note{font-family:var(--sans);font-size:13px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--ink-3);border-radius:8px;padding:13px 16px;margin:16px 0;color:var(--ink-2);max-width:66ch}
+.note b{color:var(--ink)}
+.note.a{border-left-color:var(--user)}
+.note.b{border-left-color:var(--tech)}
+
+/* status chips */
+.chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:2.5px 8px;border-radius:99px;white-space:nowrap}
+.chip.live{background:var(--live-bg);color:var(--live)}
+.chip.partial{background:var(--partial-bg);color:var(--partial)}
+.chip.proj{background:var(--proj-bg);color:var(--proj)}
+.chip.future{background:var(--future-bg);color:var(--future)}
+.chip.block{background:var(--block-bg);color:var(--block)}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-family:var(--sans);font-size:12.5px;color:var(--ink-2);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:18px 0}
+.legend span{display:flex;align-items:center;gap:7px}
+
+/* tables */
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:16px 0;background:var(--panel);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-family:var(--sans);font-size:12.8px;min-width:560px}
+thead th{text-align:left;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--ink-2);padding:10px 14px;border-bottom:1px solid var(--line-2);background:var(--paper-2);white-space:nowrap;position:sticky;top:0}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+tbody td:first-child{color:var(--ink);font-weight:600}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--paper-2)}
+.num{font-variant-numeric:tabular-nums;font-family:var(--mono)}
+
+/* formula blocks */
+.formula{font-family:var(--mono);font-size:13px;background:var(--paper-2);border:1px solid var(--line);border-radius:9px;padding:14px 17px;margin:14px 0;overflow-x:auto;white-space:pre;color:var(--ink);line-height:1.7}
+.formula .op{color:var(--ink-3)}
+.formula.a{border-left:3px solid var(--user)}
+.formula.b{border-left:3px solid var(--tech)}
+.worked{font-family:var(--sans);font-size:12.8px;background:var(--panel);border:1px dashed var(--line-2);border-radius:9px;padding:12px 15px;margin:10px 0;color:var(--ink-2)}
+.worked b{color:var(--ink);font-family:var(--mono)}
+
+/* umbrella cards */
+.umb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:16px 0}
+.umb{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 14px}
+.umb .w{font-family:var(--mono);font-size:22px;font-weight:600;line-height:1}
+.umb .t{font-family:var(--sans);font-size:12px;font-weight:650;margin-top:6px}
+.umb .s{margin-top:7px}
+
+/* architecture diagram — layered L0–L6 technical schematic */
+.arch-wrap{overflow-x:auto;margin:18px 0;padding:26px 6px 44px}
+.arch-legend{display:flex;flex-wrap:wrap;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:16px 0;font-family:var(--sans);font-size:11.5px;color:var(--ink-2)}
+.arch-legend .grp{display:flex;align-items:center;gap:7px}
+.arch-legend .dot{width:9px;height:9px;border-radius:2px;flex:0 0 auto}
+.arch-legend .div{width:1px;height:16px;background:var(--line-2)}
+.arch-shell{position:relative;width:780px;height:660px;margin:0 auto}
+.arch-node{position:absolute;background:var(--panel);border:1px solid var(--line-2);border-radius:9px;padding:9px 12px;box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:center}
+.arch-node .id{font-family:var(--mono);font-size:9.5px;font-weight:700;color:var(--ink-3);letter-spacing:.03em}
+.arch-node .t{font-family:var(--sans);font-size:12.5px;font-weight:700;line-height:1.2;margin-top:2px;color:var(--ink)}
+.arch-node .c{font-family:var(--sans);font-size:10px;color:var(--ink-3);margin-top:4px;line-height:1.35}
+.arch-node .stat{position:absolute;top:8px;right:9px;font-family:var(--mono);font-size:8px;font-weight:800;letter-spacing:.04em;padding:1.5px 5px;border-radius:4px}
+.arch-node .stat.live{background:var(--live-bg);color:var(--live)}
+.arch-node .stat.partial{background:var(--partial-bg);color:var(--partial)}
+.arch-node .stat.proj{background:var(--proj-bg);color:var(--proj)}
+.arch-node.anchor-readiness{background:var(--tech-soft);border-color:var(--tech-line);border-width:1.5px}
+.arch-node.anchor-readiness .t{color:var(--tech);font-size:13.5px}
+.arch-node.anchor-decision{background:var(--tech-soft);border-color:var(--tech);border-width:1.5px;align-items:center}
+.arch-node.anchor-decision .id,.arch-node.anchor-decision .t,.arch-node.anchor-decision .c{text-align:center}
+.arch-node.anchor-decision .t{color:var(--tech);font-size:14.5px}
+.arch-node.anchor-decision .c{font-family:var(--mono);letter-spacing:.02em}
+.arch-node.gate{background:repeating-linear-gradient(135deg,var(--block-bg) 0 8px,transparent 8px 16px),var(--panel);border-color:var(--block);border-style:dashed}
+.arch-node.gate .t{color:var(--block)}
+.arch-node .flag{position:absolute;top:-9px;left:10px;font-family:var(--mono);font-size:8.5px;font-weight:800;letter-spacing:.04em;background:var(--block);color:var(--panel);padding:2px 7px;border-radius:99px}
+.arch-node .weights{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:9.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.arch-node.src{padding:10px 12px}
+.arch-node.src .t{font-size:11.5px}
+.arch-node.src .c{font-size:9.5px}
+.arch-node.src.live{border-color:var(--live)}
+.arch-node.src.partial{border-color:var(--partial)}
+.arch-node.src.proj{border-color:var(--proj)}
+.arch-node.src.future{border-color:var(--future)}
+.arch-node.src .src-head{font-family:var(--mono);font-size:8.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px}
+.arch-node.src.live .src-head{color:var(--live)}
+.arch-node.src.partial .src-head{color:var(--partial)}
+.arch-node.src.proj .src-head{color:var(--proj)}
+.arch-node.src.future .src-head{color:var(--future)}
+.arch-node.src p{font-family:var(--sans);font-size:9.5px;color:var(--ink-2);line-height:1.5;margin:0}
+.arch-node.src p b{color:var(--ink);font-weight:650}
+.arch-band{position:absolute;border-radius:14px;pointer-events:none}
+.arch-band.ext{border:1.5px dashed var(--line-2)}
+.arch-band.score{border:1px solid var(--line);background:var(--paper-2);opacity:.5}
+.arch-band.separate{border:1.5px dashed var(--line-2)}
+.arch-band-label{position:absolute;font-family:var(--mono);font-size:9.5px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);background:var(--panel);padding:0 8px}
+.arch-band-label.tech{color:var(--tech)}
+svg.arch-conn{position:absolute;top:0;left:0;overflow:visible}
+.arch-conn-line{fill:none;stroke:var(--line-2);stroke-width:1.5}
+.arch-conn-line.into-gate{stroke:var(--block);opacity:.65}
+.arch-conn-dash{fill:none;stroke:var(--ink-3);stroke-width:1.3;stroke-dasharray:4 4}
+.arch-side-note{position:absolute;font-family:var(--sans);font-size:10px;color:var(--ink-3);font-style:italic;width:230px;line-height:1.4}
+
+/* screen cards for user guide */
+.screen{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:20px 22px;margin:18px 0;box-shadow:var(--shadow)}
+.screen .eyebrow{font-family:var(--mono);font-size:11px;color:var(--user);letter-spacing:.02em}
+.screen h4{margin-top:0;color:var(--ink);font-size:17px;font-family:var(--serif);text-transform:none;letter-spacing:0;font-weight:650}
+
+.persona-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.persona{background:var(--user-soft);border:1px solid var(--user-line);border-radius:9px;padding:11px 13px;font-family:var(--sans)}
+.persona .role{font-size:12.5px;font-weight:700;color:var(--user)}
+.persona .q{font-size:12px;color:var(--ink-2);margin-top:4px;font-style:italic}
+
+footer{grid-column:1/-1;border-top:1px solid var(--line);padding:26px 40px 50px;font-family:var(--sans);font-size:11.5px;color:var(--ink-3)}
+
+.backtotop{position:fixed;bottom:22px;right:26px;font-family:var(--sans);font-size:11.5px;font-weight:650;background:var(--panel);border:1px solid var(--line-2);border-radius:99px;padding:8px 14px;color:var(--ink-2);text-decoration:none;box-shadow:var(--shadow);z-index:20}
+</style>
+
+<div class="shell">
+  <header class="masthead">
+    <div class="kicker">Help &amp; Reference Guide · v1.0 Prototype</div>
+    <h1>Promotion Intelligence Platform</h1>
+    <p class="sub">A talent-decision platform that turns evaluation, behavioral, and coaching data into an explainable, auditable promotion readiness score — covering the Home dashboard and the Promotion workspace.</p>
+    <div class="parts">
+      <a class="part-chip a" href="#user-guide"><span class="n">Part I</span> User Guide</a>
+      <a class="part-chip b" href="#tech-guide"><span class="n">Part II</span> Technical Guide</a>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <div class="grp a">Part I · User Guide</div>
+    <a href="#ug-overview">Overview &amp; who it's for</a>
+    <a href="#ug-access">Roles &amp; what each sees</a>
+    <a href="#ug-roles">Role-by-role reference</a>
+    <a href="#ug-role-agent" class="sub">Agent</a>
+    <a href="#ug-role-supervisor" class="sub">Supervisor</a>
+    <a href="#ug-role-opsmgr" class="sub">Operations Manager</a>
+    <a href="#ug-role-hr" class="sub">Human Resources</a>
+    <a href="#ug-home">Home dashboard</a>
+    <a href="#ug-home-tiles" class="sub">Every tile, explained</a>
+    <a href="#ug-employee">Employee Workspace</a>
+    <a href="#ug-employee-tabs" class="sub">The seven tabs</a>
+    <a href="#ug-assistant" class="sub">Ask AI (assistant)</a>
+    <a href="#ug-promotion">Promotion workspace</a>
+    <a href="#ug-dashboard" class="sub">Promotion Dashboard</a>
+    <a href="#ug-workflow" class="sub">Approval Workflow</a>
+    <a href="#ug-compare" class="sub">Compare Candidates</a>
+    <a href="#ug-consistency" class="sub">Consistency Review</a>
+    <a href="#ug-packet" class="sub">Promotion Packet</a>
+    <a href="#ug-journeys">Typical workflows</a>
+    <a href="#ug-glossary">Reading the data-source chips</a>
+
+    <div class="grp b">Part II · Technical Guide</div>
+    <a href="#tg-architecture">Scoring architecture</a>
+    <a href="#tg-umbrellas">The 10 umbrellas</a>
+    <a href="#tg-u1" class="sub">1 · Quality (Evaluation)</a>
+    <a href="#tg-u2" class="sub">2 · Conversation &amp; Behavior</a>
+    <a href="#tg-u3" class="sub">3 · Coaching &amp; Growth</a>
+    <a href="#tg-u4-10" class="sub">4–10 · condensed reference</a>
+    <a href="#tg-redistribution">Weighting &amp; redistribution</a>
+    <a href="#tg-decision">Decision rule</a>
+    <a href="#tg-confidence">Confidence score</a>
+    <a href="#tg-trajectory">Trajectory</a>
+    <a href="#tg-eligibility">Eligibility gate</a>
+    <a href="#tg-careerfit">Career Fit</a>
+    <a href="#tg-buildstatus">Build status &amp; roadmap</a>
+  </nav>
+
+  <main>
+
+    <!-- ============================================================ PART I ============================================================ -->
+    <div class="part-divider a" id="user-guide"><span class="lbl">Part I — User Guide</span><span class="ln"></span></div>
+
+    <section class="section" id="ug-overview">
+      <h2>Overview</h2>
+      <p class="lede">Promotion Intelligence answers one question for whoever is looking at it: <strong>who needs my attention, and are they actually ready?</strong> It replaces a gut-feel promotion conversation with a scored, evidenced, auditable one — without removing the human decision at the end.</p>
+      <p>The platform has two workspaces today. <strong>Home</strong> is the daily triage screen — counts and short worklists, scoped to whoever is logged in. <strong>Promotion</strong> is where a candidate is actually evaluated, discussed, and moved through approval — from "looks ready" to "promoted, on the record."</p>
+      <p>Every number on screen is tagged with where it came from. A green <span class="chip live">Live</span> chip means it's real data today; an amber <span class="chip partial">Partial</span> or grey <span class="chip proj">Projected</span> chip means it needs an integration that isn't connected yet. Nothing is presented as certain when it isn't — see <a href="#ug-glossary">Reading the data-source chips</a>.</p>
+    </section>
+
+    <section class="section" id="ug-access">
+      <h2>Roles &amp; what each sees</h2>
+      <p>Scope is decided the moment you sign in — there's no manual filter to set. A Supervisor only ever sees their own team; an Operations Manager sees every team under their supervisors; HR sees the whole business unit. An Agent's view is just their own profile.</p>
+      <div class="persona-grid">
+        <div class="persona"><div class="role">Agent</div><div class="q">"Am I progressing? What's next for me?"</div></div>
+        <div class="persona"><div class="role">Supervisor</div><div class="q">"Who on my team needs action today?"</div></div>
+        <div class="persona"><div class="role">Operations Manager</div><div class="q">"Which of my teams need attention, and where are the gaps?"</div></div>
+        <div class="persona"><div class="role">Human Resources</div><div class="q">"What's pending my review or calibration across the business unit?"</div></div>
+      </div>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Screen element</th><th>Supervisor</th><th>Operations Manager</th><th>Human Resources</th></tr></thead>
+        <tbody>
+          <tr><td>Awaiting Review</td><td>My team, awaiting my recommendation</td><td>Across my supervisors</td><td>The HR governance review step</td></tr>
+          <tr><td>Promotions Pending</td><td>My team</td><td>My teams / sites</td><td>My business unit</td></tr>
+          <tr><td>High-Risk</td><td>My team</td><td>My teams</td><td>My business unit</td></tr>
+          <tr><td>Coaching Pending</td><td>My team</td><td>My teams (rolled up)</td><td>— (not carried by HR)</td></tr>
+          <tr><td>Bench Strength</td><td>—</td><td>My teams</td><td>My business unit</td></tr>
+          <tr><td>Filter bar in Promotion</td><td>None — one team, filter by readiness / decision / status only</td><td>Supervisor, site, readiness, cycle</td><td>Business unit, department, site, supervisor, readiness, cycle</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note a"><b>Why no manual filter on Home:</b> the scope is fixed at login rather than chosen on screen, so nobody can accidentally see outside their remit, and the same screen means the same thing for every viewer of that role.</p>
+      <p class="note"><b>The role switcher in the top bar is a prototype-only device.</b> It lets you preview all four perspectives from one browser session. A real user signs in once and always sees the same role — there is no in-app way to switch identities.</p>
+    </section>
+
+    <section class="section" id="ug-roles">
+      <h2>Role-by-role reference</h2>
+      <p class="lede">What each persona can see and do, screen by screen. Every action button in the product is role-aware — this is the map of which button appears for whom, and why.</p>
+    </section>
+
+    <section class="section" id="ug-role-agent">
+      <div class="screen">
+        <div class="eyebrow">ROLE · AGENT — signs in as themselves</div>
+        <h4>Agent</h4>
+        <p><strong>Access:</strong> the Employee Workspace only, permanently open to their own record. No Home, no Promotion Dashboard, no Approval Workflow — an agent cannot see anyone else's data or act on anyone else's case.</p>
+        <ul>
+          <li><strong>Overview tab</strong> — their own readiness, decision, and eligibility checklist; they can set or update their career aspiration.</li>
+          <li><strong>Evidence Locker</strong> — see exactly which sources back their own score, and whether each is live or pending an integration.</li>
+          <li><strong>AI Insights</strong> — ask the assistant directly, e.g. <em>"why aren't I ready yet"</em> or <em>"what should I focus on."</em></li>
+          <li><strong>Career Journey</strong> — see the ladder ahead of them and which courses close their current skill gaps.</li>
+        </ul>
+        <p class="note"><b>What an Agent cannot do:</b> approve, recommend, or comment on their own case — the Approval Workflow, Compare Candidates, and Consistency Review screens don't exist for this role. Manager notes are read-only to them; only a supervisor can add one.</p>
+      </div>
+    </section>
+
+    <section class="section" id="ug-role-supervisor">
+      <div class="screen">
+        <div class="eyebrow">ROLE · SUPERVISOR — signs in as Rachel Torres</div>
+        <h4>Supervisor</h4>
+        <p><strong>Access:</strong> Home, Promotion, and the Employee Workspace for anyone on their own team. No site or cross-team filter — a Supervisor has exactly one team, so there's nothing to filter by.</p>
+        <ul>
+          <li><strong>Home</strong> — Awaiting Review, Promotions Pending, High-Risk, Coaching Pending, Development Actions, and Career Recommendations, all scoped to their team. No Bench Strength tile — that's an Ops Mgr / HR view.</li>
+          <li><strong>Promotion Dashboard</strong> — the light filter bar (readiness / decision / status only); the Supervisor column is hidden from the table since every row is already their own report. Row action: <strong>Recommend</strong>, shown only once a candidate is READY.</li>
+          <li><strong>Approval Workflow</strong> — owns the first stage, <em>Supervisor Review</em>. Can <strong>Approve &amp; advance</strong> or <strong>Delay</strong> a case at that stage, and is the one who <strong>provides evidence</strong> whenever Operations or HR requests more of it further up the chain.</li>
+          <li><strong>Quick Actions</strong> — Review Promotions · View Employee · Compare Employees · Generate Promotion Packet.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="ug-role-opsmgr">
+      <div class="screen">
+        <div class="eyebrow">ROLE · OPERATIONS MANAGER — signs in as Daniel Wu</div>
+        <h4>Operations Manager</h4>
+        <p><strong>Access:</strong> Home, Promotion, and the Employee Workspace for anyone under the supervisors they oversee.</p>
+        <ul>
+          <li><strong>Home</strong> — the same tile set as Supervisor, scoped to "my teams and sites," plus the <strong>Bench Strength</strong> tile — a coverage view Supervisors don't get, since it only means something across multiple teams.</li>
+          <li><strong>Promotion Dashboard</strong> — a fuller filter bar (supervisor/team, site, readiness, cycle); the Supervisor column is shown so cases can be compared across teams. Row action: <strong>Compare</strong>, which jumps straight into Compare Candidates.</li>
+          <li><strong>Approval Workflow</strong> — owns <em>Operations Review</em>, the second stage for any target above the most junior tier. Can request evidence from the Supervisor, approve &amp; advance, send back, or delay.</li>
+          <li><strong>Consistency Review</strong> — runs the calibration discussion across their supervisors, flagging over-recommended candidates and missed talent before cases move further.</li>
+          <li><strong>Quick Actions</strong> — Review Promotions · Compare Employees · Open Consistency Review · Generate Promotion Packet.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="ug-role-hr">
+      <div class="screen">
+        <div class="eyebrow">ROLE · HUMAN RESOURCES — signs in as Karen Blake</div>
+        <h4>Human Resources</h4>
+        <p><strong>Access:</strong> the broadest scope — Home, Promotion, and the Employee Workspace for the entire business unit.</p>
+        <ul>
+          <li><strong>Home</strong> — the only role <em>without</em> a Coaching Pending tile (coaching is a supervisor-level concern); carries Bench Strength like Operations Manager, scoped to the whole business unit.</li>
+          <li><strong>Promotion Dashboard</strong> — the full filter bar: business unit, department, site, supervisor, readiness, cycle. Row action: <strong>Packet</strong>, opening the Promotion Packet directly — HR's job is the governance record, not the initial call.</li>
+          <li><strong>Approval Workflow</strong> — owns both <em>HR Governance</em> and, in this prototype, <em>Leadership Approval</em> (mapped to HR until a dedicated Leadership/Director persona exists). Can request evidence, approve &amp; advance, send back, or delay at either stage — and the final approval step additionally checks that an open, funded requisition exists for the target role before it can be signed off.</li>
+          <li><strong>Consistency Review</strong> — same calibration tooling as Operations Manager, at business-unit scope.</li>
+          <li><strong>Quick Actions</strong> — Review Promotions · Open Consistency Review · Approvals &amp; Governance · Workforce Analytics · Generate Promotion Packet.</li>
+        </ul>
+        <p class="note a"><b>Prototype quirk worth knowing:</b> Leadership Approval is currently routed to HR because no separate Leadership/Director role exists yet in the app. If that persona is added later, this stage should move to them.</p>
+      </div>
+    </section>
+
+    <section class="section" id="ug-home">
+      <h2>Home dashboard</h2>
+      <p>Home is a triage screen, not a report. It only ever shows counts and short lists — clicking any of them opens the workspace that owns the detail. It answers "what needs me today" in seconds.</p>
+      <h4>Quick Actions, by role</h4>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Supervisor</th><th>Operations Manager</th><th>Human Resources</th></tr></thead>
+        <tbody><tr>
+          <td>Review Promotions · View Employee · Compare Employees · Generate Packet</td>
+          <td>Review Promotions · Compare Employees · Start Calibration · Succession &amp; Bench · Generate Packet</td>
+          <td>Review Promotions · Start Calibration · Approvals &amp; Governance · Workforce Analytics · Generate Packet</td>
+        </tr></tbody>
+      </table></div>
+    </section>
+
+    <section class="section" id="ug-home-tiles">
+      <h3>Every tile, explained</h3>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Tile</th><th>What it tells you</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>Awaiting Review</td><td>How many promotion cases are sitting in <em>your</em> queue — where you are the bottleneck.</td><td><span class="chip proj">Workflow module</span></td></tr>
+          <tr><td>Promotions Pending</td><td>How many of your people are anywhere in the approval pipeline right now — "how much is in motion," not your personal to-do.</td><td><span class="chip proj">Workflow module</span></td></tr>
+          <tr><td>High-Risk</td><td>People who are both promotion-worthy <em>and</em> likely to leave, so you can act before losing them.</td><td><span class="chip partial">Attrition proxy</span></td></tr>
+          <tr><td>Coaching Due</td><td>Open or overdue coaching actions from evaluations — fixes the <em>current</em> role.</td><td><span class="chip live">NICE Evals · live</span></td></tr>
+          <tr><td>Development Actions</td><td>Career-development items (courses, certifications) still incomplete — grows toward a <em>future</em> role.</td><td><span class="chip proj">Talent Incubator</span></td></tr>
+          <tr><td>Career Recommendations</td><td>Best-fit next-move suggestions nobody has reviewed yet — a prompt to have a career conversation.</td><td><span class="chip future">Career engine</span></td></tr>
+          <tr><td>Bench Strength</td><td>How deep the ready-successor pool is for key roles (HR / Ops Mgr only).</td><td><span class="chip partial">Readiness rollup + HR data</span></td></tr>
+          <tr><td>Pending Tasks</td><td>Your single worklist — everything actionable for you, most urgent first.</td><td><span class="chip proj">Workflow + rules</span></td></tr>
+          <tr><td>AI Insights</td><td>A one-line plain-English read on your people's readiness, generated from the live counts.</td><td><span class="chip live">Readiness engine</span></td></tr>
+          <tr><td>Recent Activity</td><td>What changed in your area recently, since your last login (7-day fallback).</td><td><span class="chip proj">Audit log</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="note"><b>Coaching Due vs. Development Actions vs. Pending Tasks:</b> these look similar but never double-count. Coaching Due is quality-driven and about the current role; Development Actions is career-driven and about the next one. Both roll into Pending Tasks — the counters are "how many, at a glance," Pending Tasks is "which ones, click to do."</p>
+    </section>
+
+    <section class="section" id="ug-employee">
+      <h2>Employee Workspace</h2>
+      <p class="lede">The full record for <strong>one person</strong> — readiness, evidence, competencies, and career history in one place. It's opened two ways: a Supervisor/Ops Mgr/HR clicks into it from Home, the Promotion Dashboard, Compare, or a search result to review a candidate; and it's <strong>the screen an Agent lands on when they log in</strong> — their role has no access to Home or Promotion, only their own Employee Workspace.</p>
+      <p class="note a"><b>Same screen, two audiences:</b> a manager opens someone else's record to decide; an agent opens their own record to understand where they stand. The tabs, charts, and evidence are identical either way — only whose name is on it changes.</p>
+    </section>
+
+    <section class="section" id="ug-employee-tabs">
+      <h3>The seven tabs</h3>
+      <div class="screen">
+        <div class="eyebrow">EMPLOYEE WORKSPACE → OVERVIEW</div>
+        <h4>Overview</h4>
+        <p>The landing tab. Employee information (role, career goal, manager, tenure) alongside the Promotion Readiness donut and decision pill, a Readiness Summary breaking out Career Fit / Leadership / Learning Progress / AI Confidence as bars, an Eligibility checklist (tenure, certification, compliance, has-evaluations), and a Career Aspiration &amp; Manager Notes panel where a manager can log a free-text note. Closes with a one-line AI summary.</p>
+        <p class="note"><b>Aspirations and manager notes are write-back, not measured</b> — the agent's stated career goal and a manager's note are stored as context; they don't feed the readiness score.</p>
+      </div>
+      <div class="screen">
+        <div class="eyebrow">EMPLOYEE WORKSPACE → PERFORMANCE</div>
+        <h4>Performance</h4>
+        <p>Trend lines for Quality &amp; CSAT and Productivity &amp; Attendance over the last six periods, plus three callouts: Coaching Impact (pre- vs. post-coaching point change), Compliance status (Clear / Flagged — a flag is a hard block on promotion), and Attrition Risk (Low / Medium / High).</p>
+      </div>
+      <div class="screen">
+        <div class="eyebrow">EMPLOYEE WORKSPACE → COMPETENCIES</div>
+        <h4>Competencies</h4>
+        <p>An eight-axis radar chart — Communication, Coaching, Leadership, Customer Focus, Ownership, Problem Solving, Collaboration, Learning Agility — each with its own value, plus a Skill Gaps &amp; Recommended Focus card listing the three lowest-scoring axes and a suggested development path. Four of the eight axes read from live evaluation/behavioral data today; the rest are placeholders until a competency source is connected.</p>
+      </div>
+      <div class="screen">
+        <div class="eyebrow">EMPLOYEE WORKSPACE → EVIDENCE LOCKER</div>
+        <h4>Evidence Locker</h4>
+        <p>The literal answer to "what is this score based on." Eight evidence sources are listed — Quality Evaluations, Coaching Sessions, Interaction Analytics, Customer Feedback, Recognition, Certifications, Performance Reviews, Manager Notes — each tagged <span class="chip live">available</span> or <span class="chip proj">pending integration</span>. Above the list, an optional <strong>requested evidence</strong> card tracks a specific ask (e.g. HR requesting a document) through pending → provided. Below it, four tiles summarize Evidence Completeness, Confidence, Evidence Trust, and Audited Evaluations.</p>
+        <p class="note a"><b>Why this tab exists:</b> "every recommendation must trace to evidence" is the platform's core promise — this is where a skeptical reviewer (or the agent themselves) goes to check that promise, source by source.</p>
+      </div>
+      <div class="screen">
+        <div class="eyebrow">EMPLOYEE WORKSPACE → AI INSIGHTS</div>
+        <h4>AI Insights</h4>
+        <p>Four generated call-outs — Promotion (the readiness verdict), Career (best-fit next role and its fit %), Leadership (the leadership index and what it implies), and Development (which skill gaps to close) — next to a Reasoning &amp; Contributing Factors panel showing the top five competency scores as bars and the overall AI Confidence. A "Ask the assistant why →" link opens the same AI Assistant described below, already primed on this person.</p>
+      </div>
+      <div class="screen">
+        <div class="eyebrow">EMPLOYEE WORKSPACE → CAREER JOURNEY</div>
+        <h4>Career Journey</h4>
+        <p>A Career Explorer strip showing the ladder from the current role forward with today's position marked, a Career Readiness donut, a Recommended Roles list ranked by fit %, and a Learning Roadmap mapping each skill gap to a course. The ladder shown here is illustrative until role ontology and competency requirements are configured (see <a href="#tg-careerfit">Career Fit</a>).</p>
+      </div>
+      <div class="screen">
+        <div class="eyebrow">EMPLOYEE WORKSPACE → TIMELINE</div>
+        <h4>Timeline</h4>
+        <p>A chronological log — joining, onboarding, certifications earned, coaching sessions, recognition, evaluations — read top-to-bottom as the person's story rather than a snapshot. Coaching and evaluation entries are live; joining, training, certification, and award entries need an HRIS/LMS connection.</p>
+      </div>
+    </section>
+
+    <section class="section" id="ug-assistant">
+      <h3>Ask AI (assistant)</h3>
+      <p>A slide-over chat, opened from the <strong>Ask AI</strong> button in the top bar (or "Ask the assistant why" inside AI Insights), that answers plain-language questions grounded in the same evidence shown on screen — <em>"Why isn't Marcus Johnson promotion-ready?"</em>, <em>"Who is ready for Team Lead?"</em>, <em>"Compare Sarah Mitchell and James Okafor."</em> It's explanatory, not a separate source of truth: every answer traces back to the readiness, evidence, and competency data already on the candidate's own screens.</p>
+    </section>
+
+    <section class="section" id="ug-promotion">
+      <h2>Promotion workspace</h2>
+      <p class="lede">This is where a candidate goes from "looks ready" to "promoted, on the record." It's four full screens, one action, and one contextual view.</p>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Sub-screen</th><th>Form</th><th>What it's for</th></tr></thead>
+        <tbody>
+          <tr><td>Promotion Dashboard</td><td>Full screen (the anchor)</td><td>The scored list of every candidate — table or board view</td></tr>
+          <tr><td>Approval Workflow</td><td>Full screen</td><td>The governance chain a READY case moves through</td></tr>
+          <tr><td>Compare Candidates</td><td>Action, launched from Dashboard</td><td>Side-by-side comparison, not a standalone list</td></tr>
+          <tr><td>Consistency Review</td><td>Full screen</td><td>Cross-supervisor fairness / calibration</td></tr>
+          <tr><td>Promotion Packet</td><td>Full screen</td><td>The decision document for one candidate</td></tr>
+          <tr><td>Supervisor Handoff</td><td>Contextual view</td><td>Day-one briefing when a new supervisor takes a team</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="section" id="ug-dashboard">
+      <div class="screen">
+        <div class="eyebrow">PROMOTION → PROMOTION DASHBOARD</div>
+        <h4>Promotion Dashboard</h4>
+        <p>One row per candidate, scoped to your role. Four KPI cards sit above the table — Total Agents, the Ready / Developing / Not Yet / Insufficient split, Avg Readiness, and Avg Confidence — all scoped to your filters.</p>
+        <h4 style="margin-top:18px">Table columns</h4>
+        <div class="tblwrap"><table>
+          <thead><tr><th>Column</th><th>What it tells you</th></tr></thead>
+          <tbody>
+            <tr><td>Employee</td><td>Name, current role, site</td></tr>
+            <tr><td>Supervisor</td><td>Who they report to (Ops Mgr / HR views only)</td></tr>
+            <tr><td>Target Role</td><td>The role being assessed for — the row's anchor. Human-nominated today (see <a href="#tg-careerfit">Career Fit</a>).</td></tr>
+            <tr><td>Readiness</td><td>The headline score, decision label, and trajectory arrow. See <a href="#tg-architecture">Technical Guide</a>.</td></tr>
+            <tr><td>Confidence</td><td>How much to trust that score.</td></tr>
+            <tr><td>Career Fit</td><td>Match to the target role's competency profile — shows "— · set up" until role profiles are configured.</td></tr>
+            <tr><td>Eligibility</td><td>Policy permission, independent of readiness — tenure, certifications, compliance.</td></tr>
+            <tr><td>Supervisor Recommendation</td><td>The human judgment layered on top of the evidence.</td></tr>
+            <tr><td>Approval Status</td><td>Where the case sits in the approval chain.</td></tr>
+            <tr><td>Actions</td><td>Role-aware: Supervisor → Recommend · Ops Mgr → Compare · HR → open the Packet.</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note a"><b>Decision ≠ approval.</b> READY means "ready on the evidence." It does not mean approved, eligible, or that there's an open seat — those are separate checks (Eligibility, and business need / open requisitions) that sit next to the score rather than inside it.</p>
+      </div>
+    </section>
+
+    <section class="section" id="ug-workflow">
+      <div class="screen">
+        <div class="eyebrow">PROMOTION → APPROVAL WORKFLOW</div>
+        <h4>Approval Workflow</h4>
+        <p>Only candidates marked READY enter this chain. The chain's length depends on how senior the <em>target</em> role is — a rung-1 move (e.g. Agent → Senior Agent) needs fewer sign-offs than a move into management.</p>
+        <div class="tblwrap"><table>
+          <thead><tr><th>Target seniority</th><th>Chain</th></tr></thead>
+          <tbody>
+            <tr><td>Tier 1 — individual contributor</td><td>Supervisor Review → HR Governance → Approved</td></tr>
+            <tr><td>Tier 2 — lead / analyst / specialist</td><td>Supervisor Review → Operations Review → HR Governance → Approved</td></tr>
+            <tr><td>Tier 3 — manager / director</td><td>Supervisor Review → Operations Review → HR Governance → Leadership Approval → Approved</td></tr>
+          </tbody>
+        </table></div>
+        <p>Each stage records who acted, when, and why — the trail that makes the eventual decision defensible in an audit.</p>
+      </div>
+    </section>
+
+    <section class="section" id="ug-compare">
+      <div class="screen">
+        <div class="eyebrow">PROMOTION → COMPARE CANDIDATES</div>
+        <h4>Compare Candidates</h4>
+        <p>Launched as an action, not a tab in its own right. <strong>By position</strong> auto-loads every READY candidate for a target role across supervisors; <strong>custom selection</strong> lets you add any agents you choose. Scores that already roll into Readiness (Quality, Behavioral, etc.) are omitted from the comparison so you're not re-reading the same number twice — Confidence is shown alongside so thin data isn't over-read.</p>
+      </div>
+    </section>
+
+    <section class="section" id="ug-consistency">
+      <div class="screen">
+        <div class="eyebrow">PROMOTION → CONSISTENCY REVIEW</div>
+        <h4>Consistency Review (Calibration &amp; Fairness)</h4>
+        <p>Each cycle, the panel — Operations Manager, HR, and supervisors — reviews flagged mismatches between a supervisor's recommendations and the scored evidence, and discusses the outliers: agents who look <strong>over-recommended</strong> versus <strong>missed talent</strong> the data suggests but no supervisor has flagged. This screen is the diagnostic; the actual selection happens in Compare Candidates, and sign-off happens in Approval Workflow.</p>
+      </div>
+    </section>
+
+    <section class="section" id="ug-packet">
+      <div class="screen">
+        <div class="eyebrow">PROMOTION → PROMOTION PACKET</div>
+        <h4>Promotion Packet</h4>
+        <p>The decision document for one candidate — readiness, evidence, eligibility, and recommendation assembled into a single printable record. This is what a compliance failure or an "unverified gate" gets written onto: e.g. <em>"blocked by compliance gate"</em> rather than a silent NOT YET.</p>
+      </div>
+    </section>
+
+    <section class="section" id="ug-journeys">
+      <h2>Typical workflows</h2>
+      <h4>Supervisor — weekly review</h4>
+      <ol>
+        <li>Open <strong>Home</strong> → check Awaiting Review and Coaching Pending.</li>
+        <li>Click through to <strong>Promotion Dashboard</strong>, filtered to your team.</li>
+        <li>For a READY candidate, use <strong>Recommend</strong> directly from the row, or open the <strong>Packet</strong> to review the full evidence first.</li>
+        <li>Submitting a recommendation puts the case into <strong>Approval Workflow</strong> at Supervisor Review.</li>
+      </ol>
+      <h4>Operations Manager — calibration cycle</h4>
+      <ol>
+        <li><strong>Home</strong> → Bench Strength, to see where coverage gaps are before the cycle starts.</li>
+        <li><strong>Consistency Review</strong> → resolve flagged mismatches across supervisors.</li>
+        <li><strong>Compare Candidates</strong> "by position" → shortlist across teams for a given open role.</li>
+        <li>Advance shortlisted cases through <strong>Approval Workflow</strong> at Operations Review.</li>
+      </ol>
+      <h4>HR — governance &amp; sign-off</h4>
+      <ol>
+        <li><strong>Home</strong> → Awaiting Review shows cases that have reached the HR governance step.</li>
+        <li>Open the <strong>Promotion Packet</strong> for each — this is the audit-ready record.</li>
+        <li>Check <strong>Eligibility</strong> explicitly: a strong readiness score never overrides a compliance or tenure block.</li>
+        <li>Approve in <strong>Approval Workflow</strong>; the case is stamped with the current promotion cycle.</li>
+      </ol>
+    </section>
+
+    <section class="section" id="ug-glossary">
+      <h2>Reading the data-source chips</h2>
+      <p>Every widget in the app is tagged with where its number actually comes from — the goal is that nothing on screen looks more certain than it is.</p>
+      <div class="legend">
+        <span><span class="chip live">Live</span> real data today, no integration needed</span>
+        <span><span class="chip partial">Partial</span> some of it is live, the rest needs a connection</span>
+        <span><span class="chip proj">Projected</span> the metric is fully defined, source not yet connected</span>
+        <span><span class="chip future">Future</span> needs a new data source that doesn't exist yet</span>
+        <span><span class="chip block">Blocked</span> a hard gate is stopping the decision</span>
+      </div>
+      <p>In the prototype UI these render as small colored tags — <code>NIA · live</code>, <code>WFM · mock</code>, <code>config</code> — next to the widget they describe.</p>
+    </section>
+
+    <!-- ============================================================ PART II ============================================================ -->
+    <div class="part-divider b" id="tech-guide"><span class="lbl">Part II — Technical Guide</span><span class="ln"></span></div>
+
+    <section class="section" id="tg-architecture">
+      <h2>Scoring architecture</h2>
+      <p class="lede">Readiness is a <strong>two-level weighted roll-up</strong> sitting on top of raw source data, with its own override and its own separate policy checks. Six layers, <code>L0</code> through <code>L6</code>, follow the data end to end: external systems → per-agent dimensions → weighted umbrellas → the Readiness composite → the parallel checks that produce a Decision → the policy/fit axes checked separately from it. Node IDs echo the report's own umbrella numbering — <code>GT·U6</code> is Umbrella 6.</p>
+
+      <div class="arch-legend">
+        <div class="grp"><span class="dot" style="background:var(--live)"></span> Live</div>
+        <div class="grp"><span class="dot" style="background:var(--partial)"></span> Partial</div>
+        <div class="grp"><span class="dot" style="background:var(--proj)"></span> Projected</div>
+        <div class="grp"><span class="dot" style="background:var(--future)"></span> Future</div>
+        <div class="div"></div>
+        <div class="grp"><code>L0…L6</code> layer index</div>
+        <div class="grp"><code>DIM</code> / <code>GT·U6</code> node ID, mapped to the umbrella that owns it</div>
+        <div class="grp" style="border:1.5px dashed var(--line-2);padding:1px 7px;border-radius:5px">dashed border = override or checked-separately</div>
+      </div>
+
+      <div class="arch-wrap">
+      <div class="arch-shell">
+        <!-- L0 band -->
+        <div class="arch-band ext" style="left:0;top:6px;width:780px;height:114px"></div>
+        <div class="arch-band-label" style="left:16px;top:-4px">L0 · external data sources</div>
+
+        <!-- L1–L5 band -->
+        <div class="arch-band score" style="left:0;top:130px;width:780px;height:362px"></div>
+        <div class="arch-band-label tech" style="left:16px;top:120px">L1–L5 · the score</div>
+
+        <!-- L6 band -->
+        <div class="arch-band separate" style="left:0;top:530px;width:780px;height:140px"></div>
+        <div class="arch-band-label" style="left:16px;top:520px">L6 · checked separately — never inside the score</div>
+
+        <svg class="arch-conn" width="780" height="660">
+          <defs>
+            <marker id="archArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--line-2)"/>
+            </marker>
+            <marker id="archArrowDash" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)"/>
+            </marker>
+          </defs>
+
+          <!-- L0 → L1: four sources bus into one feed, drop into Dimension -->
+          <path class="arch-conn-line" d="M102,102 L102,112" />
+          <path class="arch-conn-line" d="M290,102 L290,112" />
+          <path class="arch-conn-line" d="M484,102 L484,112" />
+          <path class="arch-conn-line" d="M678,102 L678,112" />
+          <path class="arch-conn-line" d="M102,112 L678,112" />
+          <path class="arch-conn-line" d="M115,112 L115,150" marker-end="url(#archArrow)"/>
+
+          <!-- L1 row horizontal -->
+          <path class="arch-conn-line" d="M210,186 L286,186" marker-end="url(#archArrow)"/>
+          <path class="arch-conn-line" d="M480,186 L556,186" marker-end="url(#archArrow)"/>
+
+          <!-- Readiness fan-out to L2 (gate/evidence/confidence) -->
+          <path class="arch-conn-line" d="M650,232 L650,246 L385,246 L385,256" />
+          <path class="arch-conn-line" d="M135,256 L630,256" />
+          <path class="arch-conn-line" d="M135,256 L135,276" marker-end="url(#archArrow)"/>
+          <path class="arch-conn-line" d="M385,256 L385,276" marker-end="url(#archArrow)"/>
+          <path class="arch-conn-line into-gate" d="M630,256 L630,276" marker-end="url(#archArrow)"/>
+
+          <!-- L2 fan-in to Decision -->
+          <path class="arch-conn-line into-gate" d="M135,362 L135,380" />
+          <path class="arch-conn-line" d="M385,362 L385,380" />
+          <path class="arch-conn-line" d="M630,362 L630,380" />
+          <path class="arch-conn-line" d="M135,380 L630,380" />
+          <path class="arch-conn-line" d="M380,380 L380,396" marker-end="url(#archArrow)"/>
+
+          <!-- Decision → L6, dashed -->
+          <path class="arch-conn-dash" d="M380,476 L380,522" marker-end="url(#archArrowDash)"/>
+        </svg>
+
+        <!-- L0 source nodes -->
+        <div class="arch-node src live" style="left:14px;top:26px;width:176px;height:76px">
+          <div class="src-head">Live today</div>
+          <p><b>NICE Interaction Analytics</b> — fctEvaluation, detCoaching</p>
+        </div>
+        <div class="arch-node src partial" style="left:202px;top:26px;width:176px;height:76px">
+          <div class="src-head">Partial · connect</div>
+          <p><b>External LMS / HRIS</b> — certs, hire date, rating</p>
+        </div>
+        <div class="arch-node src proj" style="left:390px;top:26px;width:188px;height:76px">
+          <div class="src-head">Projected</div>
+          <p><b>Feedback Mgmt · Performance Mgmt · WFM</b> — CSAT, AHT, adherence</p>
+        </div>
+        <div class="arch-node src future" style="left:590px;top:26px;width:176px;height:76px">
+          <div class="src-head">Future</div>
+          <p><b>Mentoring / 360 tools</b> — no source today</p>
+        </div>
+
+        <!-- L1 -->
+        <div class="arch-node" style="left:20px;top:150px;width:190px;height:72px">
+          <div class="id">DIM</div>
+          <div class="t">Dimension</div>
+          <div class="c">field-level formula → 0–100, e.g. ScorePercent, SentimentScore</div>
+        </div>
+        <div class="arch-node" style="left:290px;top:150px;width:190px;height:72px">
+          <div class="id">UMB · 1–10</div>
+          <div class="t">Umbrella</div>
+          <div class="c">Σ(dimWeight × dimValue) ÷ Σ(present dimWeight)</div>
+          <div class="weights">22·18·14·8·4·0·16·8·10·0</div>
+        </div>
+        <div class="arch-node anchor-readiness" style="left:560px;top:140px;width:180px;height:92px">
+          <div class="id">RDY</div>
+          <div class="t">Readiness</div>
+          <div class="c">Σ(umbW × umbScore)<br>÷ Σ(present umbW)</div>
+        </div>
+
+        <!-- L2 -->
+        <div class="arch-node gate" style="left:20px;top:276px;width:230px;height:86px">
+          <span class="flag">override</span>
+          <div class="id">GT · U6</div>
+          <div class="t">Compliance / Conduct Gate</div>
+          <div class="c">not averaged in — FAIL forces NOT YET regardless of RDY</div>
+          <span class="stat partial">PARTIAL</span>
+        </div>
+        <div class="arch-node" style="left:270px;top:276px;width:230px;height:86px">
+          <div class="id">EVD</div>
+          <div class="t">Evidence Completeness</div>
+          <div class="c">coverageFactor × depthFactor</div>
+          <span class="stat live">LIVE</span>
+        </div>
+        <div class="arch-node" style="left:520px;top:276px;width:220px;height:86px">
+          <div class="id">CNF</div>
+          <div class="t">Confidence</div>
+          <div class="c">count + recency + consistency + coverage, /100</div>
+          <span class="stat live">LIVE</span>
+        </div>
+
+        <!-- L3: Decision -->
+        <div class="arch-node anchor-decision" style="left:190px;top:396px;width:380px;height:80px">
+          <div class="id">DEC</div>
+          <div class="t">Decision</div>
+          <div class="c">READY · DEVELOPING · NOT YET · INSUFFICIENT DATA</div>
+          <span class="stat live" style="top:9px;right:12px">LIVE</span>
+        </div>
+
+        <div class="arch-side-note" style="left:430px;top:500px">GT·U6 can't be out-voted by RDY/EVD/CNF</div>
+
+        <!-- L6 -->
+        <div class="arch-node" style="left:20px;top:550px;width:230px;height:76px">
+          <div class="id">ELG</div>
+          <div class="t">Eligibility</div>
+          <div class="c">tenure ≥ min ∧ certs current ∧ compliance clear</div>
+          <span class="stat partial">PARTIAL</span>
+        </div>
+        <div class="arch-node" style="left:270px;top:550px;width:230px;height:76px">
+          <div class="id">FIT</div>
+          <div class="t">Career Fit</div>
+          <div class="c">100 − Σ(compW × gap) ÷ Σ(compW)</div>
+          <span class="stat proj">PROJECTED</span>
+        </div>
+        <div class="arch-node" style="left:520px;top:550px;width:220px;height:76px">
+          <div class="id">BIZ</div>
+          <div class="t">Business Need</div>
+          <div class="c">open, funded requisition for the target role</div>
+          <span class="stat partial">PARTIAL</span>
+        </div>
+      </div>
+      </div>
+
+      <p class="note b"><b>Reading it:</b> raw fields from <code>L0</code> external systems are normalized into <code>DIM</code> dimensions, rolled into <code>UMB</code> umbrellas by weight, and rolled again into <code>RDY</code>. <code>RDY</code> fans into one override (<code>GT·U6</code>) and two trust metrics (<code>EVD</code>, <code>CNF</code>); all three feed <code>DEC</code>, but only <code>GT·U6</code> can force <code>NOT YET</code> outright. <code>DEC</code> then sits beside — never above — <code>L6</code>: a candidate can be <code>READY</code> and still blocked by <code>ELG</code>, or <code>READY</code> with nowhere to go per <code>BIZ</code>.</p>
+    </section>
+
+    <section class="section" id="tg-umbrellas">
+      <h2>The 10 umbrellas</h2>
+      <p>Each umbrella is a scoring domain with its own weight (out of 100) and build status. Ordered live → partial → projected → future.</p>
+      <div class="umb-grid">
+        <div class="umb"><div class="w">22</div><div class="t">1 · Quality (Evaluation)</div><div class="s"><span class="chip live">Live</span></div></div>
+        <div class="umb"><div class="w">18</div><div class="t">2 · Conversation &amp; Behavior</div><div class="s"><span class="chip live">Live</span></div></div>
+        <div class="umb"><div class="w">14</div><div class="t">3 · Coaching &amp; Growth</div><div class="s"><span class="chip live">Live</span></div></div>
+        <div class="umb"><div class="w">8</div><div class="t">4 · Learning &amp; Skill</div><div class="s"><span class="chip partial">Partial</span></div></div>
+        <div class="umb"><div class="w">4</div><div class="t">5 · Tenure &amp; Career History</div><div class="s"><span class="chip partial">Partial</span></div></div>
+        <div class="umb"><div class="w">0</div><div class="t">6 · Compliance &amp; Conduct Gate<br><span style="color:var(--ink-3);font-weight:400">→ merged into Eligibility</span></div><div class="s"><span class="chip partial">Partial</span></div></div>
+        <div class="umb"><div class="w">16</div><div class="t">7 · Surveyed Satisfaction &amp; Resolution</div><div class="s"><span class="chip proj">Projected</span></div></div>
+        <div class="umb"><div class="w">8</div><div class="t">8 · Handling Efficiency</div><div class="s"><span class="chip proj">Projected</span></div></div>
+        <div class="umb"><div class="w">10</div><div class="t">9 · Schedule Reliability</div><div class="s"><span class="chip proj">Projected</span></div></div>
+        <div class="umb"><div class="w">0*</div><div class="t">10 · Leadership &amp; Potential<br><span style="color:var(--ink-3);font-weight:400">leadership-track only</span></div><div class="s"><span class="chip future">Future</span></div></div>
+      </div>
+      <p style="font-size:12.5px;color:var(--ink-3)">Weights 1–5 &amp; 7–9 sum to the 66-point core-model total actually enabled today (22+18+14+8+4). Umbrella 10 activates only for supervisory targets, at which point weights renormalize.</p>
+    </section>
+
+    <section class="section" id="tg-u1">
+      <h3>Umbrella 1 — Quality (Evaluation) <span class="chip live" style="margin-left:6px">Live · weight 22</span></h3>
+      <p>The evaluator-judged assessment of core-role performance. It's the heaviest umbrella because it's the strongest single proof of mastery — and capped at 22 so no single umbrella can decide a promotion alone.</p>
+      <div class="formula a">Quality Score   = average(ScorePercent) across qualifying evaluations
+ScorePercent    = CurrentScoredPoints ÷ CurrentAvailablePoints × 100
+Consistency     = 100 − stdDev(ScorePercent) × 5        <span class="op">// steadier is safer</span>
+Trajectory      = regression slope of ScorePercent over time  <span class="op">// signal only, weight 0</span>
+
+Umbrella score  = (16 × QualityScore + 6 × Consistency) ÷ (16 + 6)</div>
+      <div class="worked">Six evaluations: 88, 92, 85, 90, 87, 91 → Quality Score <b>88.8</b> · stdDev ≈2.5 → Consistency <b>87.5</b> → Umbrella = (16×88.8 + 6×87.5) ÷ 22 = <b>88.4</b></div>
+      <p><strong>Excluded from the average:</strong> in-progress evaluations, self-evaluations (they feed Self-Awareness instead), and calibration evaluations. Fewer than 3 evaluations drops Consistency; fewer than 4 leaves Trajectory unset; 5+ gives full confidence weight.</p>
+    </section>
+
+    <section class="section" id="tg-u2">
+      <h3>Umbrella 2 — Conversation &amp; Behavior <span class="chip live" style="margin-left:6px">Live · weight 18</span></h3>
+      <p>Scored on effectively every interaction rather than a handful of sampled evaluations — broad, largely unbiased coverage of how the agent actually works with customers.</p>
+      <div class="formula a">Behavioral       = average(8 Enlighten behavior indices) × 10   <span class="op">// Inappropriate Action excluded</span>
+Sentiment        = (average(SentimentScore) + 2) ÷ 4 × 100      <span class="op">// −2..+2 range → 0..100</span>
+Volume/Coverage  = min(100, interactionCount)
+
+Umbrella score   = (12 × Behavioral + 4 × Sentiment + 2 × Volume) ÷ (12 + 4 + 2)</div>
+      <div class="worked">8 indices avg 8.0 → Behavioral <b>80.0</b> · avg sentiment 0.6 → Sentiment <b>65.0</b> · 140 interactions → Volume <b>100</b> → Umbrella = <b>78.9</b></div>
+    </section>
+
+    <section class="section" id="tg-u3">
+      <h3>Umbrella 3 — Coaching &amp; Growth <span class="chip live" style="margin-left:6px">Live · weight 14</span></h3>
+      <p>The "will they grow" signal — whether the agent responds to coaching and knows their own gaps — as distinct from "how good are they today."</p>
+      <div class="formula a">Coaching Impact  = min(100, max(0, 50 + delta × 5))
+                   delta = avg(ScorePercent after 1st coaching) − avg(ScorePercent before)
+Self-Awareness   = 100 − avg(|selfScore% − supervisorScore%|) × 3
+
+Umbrella score   = (10 × CoachingImpact + 4 × SelfAwareness) ÷ (10 + 4)</div>
+      <div class="worked">82 → 86 after coaching: delta +4 → Coaching Impact <b>70.0</b> · self 90% vs supervisor 85%: gap 5 → Self-Awareness <b>85.0</b> → Umbrella = <b>74.3</b></div>
+    </section>
+
+    <section class="section" id="tg-u4-10">
+      <h3>Umbrellas 4–10 — condensed reference</h3>
+      <div class="tblwrap"><table>
+        <thead><tr><th>#</th><th>Umbrella</th><th>Weight</th><th>Core formula</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>4</td><td>Learning &amp; Skill</td><td class="num">8</td><td>(3×Training + 3×Certifications + 2×CrossSkill) ÷ 8 — each a completion ratio ×100</td><td><span class="chip partial">Partial</span></td></tr>
+          <tr><td>5</td><td>Tenure &amp; Career History</td><td class="num">4</td><td>Tenure = min(100, monthsInRole ÷ 12 × 100); rating &amp; last-promotion shown as context only (weight 0)</td><td><span class="chip partial">Partial</span></td></tr>
+          <tr><td>6</td><td>Compliance &amp; Conduct Gate</td><td class="num">0</td><td>Pass/fail override — any FAIL forces decision to NOT YET. Merged into <a href="#tg-eligibility">Eligibility</a>.</td><td><span class="chip partial">Partial</span></td></tr>
+          <tr><td>7</td><td>Surveyed Satisfaction &amp; Resolution</td><td class="num">16</td><td>(9×CSAT + 7×FCR) ÷ 16 — CSAT normalized to 0–100; FCR = firstContactResolved ÷ total × 100</td><td><span class="chip proj">Projected</span></td></tr>
+          <tr><td>8</td><td>Handling Efficiency</td><td class="num">8</td><td>(5×AHT-fit + 3×ACW-fit) ÷ 8 — each 100 − |actual−target| ÷ target × 100; distance from target, not speed</td><td><span class="chip proj">Projected</span></td></tr>
+          <tr><td>9</td><td>Schedule Reliability</td><td class="num">10</td><td>(5×Adherence + 2×Occupancy + 3×Attendance) ÷ 10</td><td><span class="chip proj">Projected</span></td></tr>
+          <tr><td>10</td><td>Leadership &amp; Potential</td><td class="num">0*</td><td>(4×Mentoring + 3×PeerAssists + 3×Initiative) ÷ 10 — activates only for supervisory targets</td><td><span class="chip future">Future</span></td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:12.5px;color:var(--ink-3)">Full source maps, worked examples, and edge-case handling for every umbrella live in the underlying Screen-by-Screen Analysis report; this reference carries the formulas a reviewer actually needs on screen.</p>
+    </section>
+
+    <section class="section" id="tg-redistribution">
+      <h2>Weighting &amp; redistribution</h2>
+      <p>Every umbrella and every dimension inside it carries a <code>weight</code> and a <code>required: true/false</code> flag — nothing about the model is hardcoded.</p>
+      <div class="formula b">umbrellaScore   =  Σ(dimWeight × dimValue)      ÷  Σ(dimWeight of dimensions present)
+readinessScore  =  Σ(umbrellaWeight × umbrellaScore)  ÷  Σ(umbrellaWeight of umbrellas present)</div>
+      <p>Dividing by the weight that's actually <em>present</em> — not a fixed total — is what keeps the result on a genuine 0–100 scale no matter how many umbrellas a given customer has connected. That's what makes an agent with 4 live umbrellas comparable to one with 8.</p>
+      <h4>What happens when something is missing</h4>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Case</th><th>Meaning</th><th>Behavior</th></tr></thead>
+        <tbody>
+          <tr><td>Expected absence</td><td>The umbrella isn't enabled for this customer — they don't own that product</td><td>Redistribute silently; screen notes "not connected"</td></tr>
+          <tr><td>Unexpected absence</td><td>Enabled but no data — a broken feed, or none for this agent</td><td>Flag it, reduce Confidence, block READY if required</td></tr>
+          <tr><td>Required-missing</td><td>A <em>required</em> umbrella (Quality, by default) has no data at all</td><td><span class="chip block">INSUFFICIENT DATA</span> — no number is produced</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note b"><b>Why this matters:</b> silent redistribution of an enabled-but-broken feed would let a dead integration quietly inflate everyone's readiness. Flagging keeps the score honest — a gap you didn't buy is fine; a gap you didn't expect must surface.</p>
+      <h4>What's configurable</h4>
+      <ul>
+        <li>Enable/disable an umbrella — weights renormalize automatically</li>
+        <li>The <code>required</code> flag, per umbrella and per dimension</li>
+        <li>The weight, per umbrella and per dimension</li>
+        <li>Per-target-role weight profiles — a Team Lead track can weight Coaching higher; a QA track can weight Quality/Compliance higher</li>
+        <li>Thresholds — READY 85, DEVELOPING 70, evidence floor 60, INSUFFICIENT floor 20</li>
+      </ul>
+    </section>
+
+    <section class="section" id="tg-decision">
+      <h2>Decision rule</h2>
+      <p>The label everyone reads the same way. Decision ≠ approval — it's "ready on the evidence," evaluated top-down, first match wins.</p>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Order</th><th>Condition</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>A required umbrella has no data, or Evidence Completeness &lt; 20</td><td><span class="chip block">INSUFFICIENT DATA</span></td></tr>
+          <tr><td class="num">2</td><td>Compliance / Conduct Gate = FAIL</td><td><span class="chip block">NOT YET</span></td></tr>
+          <tr><td class="num">3</td><td>Readiness ≥ 85 <strong>and</strong> Evidence Completeness ≥ 60</td><td><span class="chip live">READY</span></td></tr>
+          <tr><td class="num">4</td><td>Readiness ≥ 70</td><td><span class="chip partial">DEVELOPING</span></td></tr>
+          <tr><td class="num">5</td><td>Readiness &gt; 0 (none of the above)</td><td><span class="chip block">NOT YET</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="formula b">Evidence Completeness = round(100 × coverageFactor × depthFactor)
+coverageFactor  = Σ[weight(umbrella) × fillRatio(umbrella)] ÷ Σ weight(enabled umbrellas)
+fillRatio       = Σ dimWeight(dimensions with data) ÷ Σ dimWeight(all its dimensions)
+depthFactor     = min(1, evaluationCount ÷ 5)</div>
+      <p>Coverage and depth are <em>multiplied</em>, not added — broad coverage on a single evaluation is still weak, and many evaluations confined to one umbrella is still narrow. Either factor being low pulls the whole score down.</p>
+      <div class="worked">Enabled: Quality 22(required) + Conversation 18 + Coaching 14 + Tenure 4 + Learning 8 = 66. All present except Learning: coverageFactor = 58÷66 = <b>0.88</b>. 6 evaluations → depthFactor <b>1.0</b> → Evidence <b>88</b> → eligible for READY. If Quality itself were missing: <b>INSUFFICIENT DATA</b>, regardless of everything else.</div>
+    </section>
+
+    <section class="section" id="tg-confidence">
+      <h2>Confidence score</h2>
+      <p>Two agents can share Readiness 82 without being equally trustworthy — Confidence separates a thin-data 82 from a deep, recent, broad 82. It shares its <code>coverageFactor</code> definition with Evidence Completeness — one source of truth.</p>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Component</th><th>Points</th><th>Rule</th></tr></thead>
+        <tbody>
+          <tr><td>Evaluation count</td><td class="num">30 max</td><td>≥5 evals → +30 · ≥2 → +15 · 1 → +5</td></tr>
+          <tr><td>Recency</td><td class="num">20 max</td><td>≤30 days → +20 · ≤60 days → +10 · else 0</td></tr>
+          <tr><td>Consistency</td><td class="num">15 max</td><td>Consistency &gt; 80 → +15</td></tr>
+          <tr><td>Umbrella coverage</td><td class="num">35 max</td><td>coverageFactor × 35</td></tr>
+        </tbody>
+      </table></div>
+      <div class="worked">6 evals, 20 days old, consistency 87, coverageFactor 1.0 → 30+20+15+35 = <b>100</b><br>2 evals, 45 days old, consistency 75, coverageFactor 0.6 → 15+10+0+21 = <b>46</b><br>1 eval, 90 days old, coverageFactor 0.3 → 5+0+0+10.5 ≈ <b>16</b></div>
+    </section>
+
+    <section class="section" id="tg-trajectory">
+      <h2>Trajectory</h2>
+      <p>Direction predicts the future: a rising 78 can beat a falling 88. Target state is a regression over monthly <em>readiness</em> snapshots (every enabled umbrella); until snapshots accumulate, it runs as a clearly-labelled quality-only proxy.</p>
+      <div class="formula b">slope = Σ((xᵢ−x̄)(yᵢ−ȳ)) ÷ Σ((xᵢ−x̄)²)      <span class="op">// least-squares, x = month, y = readiness</span>
+label = rising if slope ≥ +1.5/mo · falling if slope ≤ −1.5/mo · else flat</div>
+      <div class="worked">Five snapshots 74, 77, 80, 82, 85 → slope = 27.0 ÷ 10 = <b>2.7/month</b> → <b>RISING</b> (≥ 1.5)</div>
+      <p>Fewer than 4 snapshots reads "insufficient history" rather than guessing a direction.</p>
+    </section>
+
+    <section class="section" id="tg-eligibility">
+      <h2>Eligibility gate</h2>
+      <p>A single pass/fail prerequisite check — "is this agent <em>allowed</em> to be promoted per policy" — kept deliberately separate from Readiness ("are they good enough") and Confidence ("how sure are we"). A gate can't be out-voted by a strong score elsewhere.</p>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Check</th><th>Pass condition</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Minimum Tenure</td><td>tenureMonths ≥ minTenure (default 6)</td><td><span class="chip partial">Partial — proxy</span></td></tr>
+          <tr><td>Mandatory Certifications</td><td>All role-required certifications current</td><td><span class="chip proj">Connect to enable</span></td></tr>
+          <tr><td>Compliance</td><td>No critical/automatic-fail item in the review window</td><td><span class="chip live">Live (evaluation)</span></td></tr>
+          <tr><td>Conduct Flags</td><td>Zero open disciplinary cases</td><td><span class="chip proj">Connect to enable</span></td></tr>
+        </tbody>
+      </table></div>
+      <p>Eligible only if <strong>all four</strong> pass. On a compliance/conduct FAIL: a hard block, Decision forced to NOT YET. On a tenure/certification FAIL: shown as <strong>Ineligible</strong> — Readiness still stands, remedy is "wait" or "certify," not "coach." An unverifiable check (source not connected) is flagged, never silently passed.</p>
+    </section>
+
+    <section class="section" id="tg-careerfit">
+      <h2>Career Fit</h2>
+      <p>A different question from Readiness: not "are they ready" but "is this the right role, and which one fits best." Computed as a competency gap against a role profile, then ranked across every candidate role.</p>
+      <div class="formula b">gap[c]      = max(0, roleTarget[c] − agentScore[c])          <span class="op">// only shortfalls count</span>
+CareerFit   = 100 − (Σ compWeight[c] × gap[c] ÷ Σ compWeight[c])</div>
+      <div class="worked">Team Lead profile (weights sum to 9): Communication 88 vs target 85 → gap 0 · Coaching 72 vs 85 → gap 13×2 · Leadership 60 vs 85 → gap 25×3 · Ownership 80 vs 85 → gap 5×2 · Problem Solving 78 vs 80 → gap 2×1<br>weighted = (0+26+75+10+2)÷9 = 12.6 → CareerFit = 100 − 12.6 = <b>87.4</b></div>
+      <p>Blocked on two things today: role profiles (required level + weight per competency, per role) aren't configured yet, and some competencies — Leadership, Collaboration, Systems, Analytical Thinking, Time Management, Adaptability — have no product source at all. Until then the column shows <code>— · set up</code>, or a dimmed partial score with the missing competencies named.</p>
+    </section>
+
+    <section class="section" id="tg-buildstatus">
+      <h2>Build status &amp; roadmap</h2>
+      <p>A honest accounting of what's real today versus what needs an integration or a build.</p>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Layer</th><th>Live now</th><th>To build / connect</th></tr></thead>
+        <tbody>
+          <tr><td>Quality, Behavior, Coaching (Umbrellas 1–3)</td><td>Fully queryable from NICE Interaction Analytics / Enlighten today</td><td>Population filters (self/calibration exclusion) in the query; evaluator trust-weighting</td></tr>
+          <tr><td>Learning &amp; Tenure (Umbrellas 4–5)</td><td>Coaching-linked lessons; tenure proxy</td><td>External LMS for full catalog/certifications; HRIS for true hire date, rating, last-promotion</td></tr>
+          <tr><td>Compliance / Eligibility</td><td>Evaluation compliance categories</td><td>NICE Compliance regulatory feed; mandatory-cert integration; conduct/disciplinary feed</td></tr>
+          <tr><td>Satisfaction, Efficiency, Reliability (Umbrellas 7–9)</td><td>Nothing — formulas defined, not connected</td><td>Enlighten CSAT / Feedback Management; Performance Management or routing stats; Workforce Management</td></tr>
+          <tr><td>Leadership &amp; Potential (Umbrella 10)</td><td>Nothing</td><td>A mentoring tracker, peer-assist feed, and/or 360-feedback tool; finalized formulas</td></tr>
+          <tr><td>Decision</td><td>Five-way rule; INSUFFICIENT + compliance branches</td><td>Enforce the evidence ≥60 floor in the READY branch from real (not proxy) staleness data</td></tr>
+          <tr><td>Confidence</td><td>All four components queryable today</td><td>Replace the coded proxy with this scheme in production</td></tr>
+          <tr><td>Trajectory</td><td>Interim quality-only slope, clearly labelled</td><td>Store a monthly readiness snapshot per agent; regress that series instead</td></tr>
+          <tr><td>Career Fit</td><td>A handful of live input competencies</td><td>Role-profile configuration; capture ⚠ no-source competencies via manager/360 assessment</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note b"><b>Design principle throughout:</b> weighted average + renormalize keeps every score on the same 0–100 scale regardless of coverage; a mandatory floor means a decision is never made on missing core evidence; and every gap is flagged rather than hidden — a broken feed can't silently inflate a score.</p>
+    </section>
+
+  </main>
+
+  <footer>Promotion Intelligence Platform — Help &amp; Reference Guide · Compiled from the product prototype and the Screen-by-Screen Analysis report · Prototype v1.0, mixed live + mock data</footer>
+</div>
+
+<a class="backtotop" href="#user-guide">↑ Top</a>

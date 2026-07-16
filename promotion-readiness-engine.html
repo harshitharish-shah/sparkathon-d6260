@@ -241,6 +241,7 @@ tbody tr.clk{cursor:pointer}tbody tr.clk:hover td{background:var(--panel-2)}
       <div class="search-drop" id="searchDrop"></div>
     </div>
     <div class="spacer"></div>
+    <a class="iconbtn" id="helpBtn" href="help-doc.html" target="_blank" rel="noopener" title="Help &amp; Reference Guide" style="text-decoration:none"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.4 9.2a2.6 2.6 0 1 1 3.6 2.4c-.7.4-1 1-1 1.7v.3"/><circle cx="12" cy="17.2" r=".6" fill="currentColor" stroke="none"/></svg></a>
     <button class="iconbtn" id="notifBtn" title="Notifications"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><span class="dot"></span></button>
     <div style="position:relative"><div class="dropdown" id="notifDrop"></div></div>
     <button class="assistant-btn" id="assistBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15l-1.9-4.1L5.5 9l4.6-1.4z"/></svg>Ask AI</button>
@@ -1179,29 +1180,100 @@ function openAssist(){document.getElementById('overlay').classList.add('show');d
 function closeAssist(){document.getElementById('overlay').classList.remove('show');document.getElementById('slideover').classList.remove('show');}
 document.getElementById('assistBtn').addEventListener('click',openAssist);
 document.getElementById('overlay').addEventListener('click',closeAssist);
-function renderChat(withSug){const b=document.getElementById('soBody');
-  b.innerHTML=chat.map(m=>`<div class="msg ${m.r}">${m.t}</div>`).join('');
-  if(withSug){b.innerHTML+=`<div class="msg a">Hi Rachel 👋 I can explain any promotion decision from the evidence. Try:</div><div class="so-sug">
+function sugHTML(){return `<div class="so-sug">
     <button onclick="ask('Why isn\\'t Marcus Johnson promotion-ready?')">Why isn't Marcus Johnson promotion-ready?</button>
     <button onclick="ask('Who is ready for Team Lead?')">Who is ready for Team Lead?</button>
     <button onclick="ask('Show evidence for Emily Chen')">Show evidence for Emily Chen's score</button>
     <button onclick="ask('Compare Sarah Mitchell and James Okafor')">Compare Sarah Mitchell and James Okafor</button>
   </div>`;}
+function renderChat(withSug){const b=document.getElementById('soBody');
+  b.innerHTML=chat.map(m=>`<div class="msg ${m.r}">${m.t}</div>`).join('');
+  if(withSug){b.innerHTML+=`<div class="msg a">Hi Rachel 👋 I can explain any promotion decision from the evidence. Try:</div>`+sugHTML();}
   b.scrollTop=b.scrollHeight;}
 function ask(q){document.getElementById('soInput').value=q;sendAssist();}
-function sendAssist(){const inp=document.getElementById('soInput');const q=inp.value.trim();if(!q)return;chat.push({r:'u',t:q});inp.value='';chat.push({r:'a',t:answer(q)});renderChat(false);}
+const escHtml=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+// ── After every answer: a way to close the panel, or reset back to the starting greeting + suggestions ──
+function returnToMain(){chat=[];renderChat(true);}
+function actionRow(){return `<div class="so-sug">
+    <button onclick="closeAssist()">Close Ask AI</button>
+    <button onclick="returnToMain()">Return to main window</button>
+  </div>`;}
+// ── When the assistant has no real answer, redirect back to the starting screen (same greeting + suggestions) instead of a dead end ──
+// ── When it's an unrecognized name, offer a single "Did you mean…?" chip instead — one click re-asks the same question, corrected ──
+function sendAssist(){
+  const inp=document.getElementById('soInput');const q=inp.value.trim();if(!q)return;
+  chat.push({r:'u',t:q});inp.value='';
+  let ans=answer(q),redirect=false,corrected=null;
+  if(ans.startsWith('__DIDYOUMEAN__')){const[msg,fix]=ans.slice('__DIDYOUMEAN__'.length).split('|||');ans=msg;corrected=fix;}
+  else if(ans.startsWith('__REDIRECT__')){redirect=true;ans=ans.slice('__REDIRECT__'.length);}
+  chat.push({r:'a',t:ans});
+  renderChat(false);
+  const b=document.getElementById('soBody');
+  if(corrected){b.innerHTML+=`<div class="so-sug"><button onclick="ask('${corrected.replace(/'/g,"\\'")}')">${escHtml(corrected)}</button></div>`;}
+  else if(redirect){b.innerHTML+=`<div class="msg a">Here's what I can help with:</div>`+sugHTML();}
+  b.innerHTML+=actionRow();
+  b.scrollTop=b.scrollHeight;
+}
 function findEmpInText(q){const lq=q.toLowerCase();return EMP.find(e=>lq.includes(e.name.toLowerCase())||lq.includes(e.name.split(' ')[0].toLowerCase()));}
+// ── Fuzzy "did you mean" — catches typos/partial names that exact substring matching misses ──
+function levenshtein(a,b){const m=a.length,n=b.length,dp=[Array.from({length:n+1},(_,j)=>j)];for(let i=1;i<=m;i++){dp[i]=[i];for(let j=1;j<=n;j++)dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);}return dp[m][n];}
+// Typo-tolerant keyword check — "evidances"/"evidence" should mean the same intent, not silently fall through to the generic answer
+function fuzzyIncludes(lq,target,maxScore=0.3){
+  if(lq.includes(target))return true;
+  return lq.split(/\s+/).some(w=>Math.abs(w.length-target.length)<=3&&levenshtein(w,target)/Math.max(w.length,target.length)<=maxScore);
+}
+// Case-independent — "michael johnson" (typed lowercase) must guess just as well as "Michael Johnson"
+const STOPWORDS=new Set(['why',"who's",'who','what','how','is','are',"isn't",'not','did','does','do','show','compare','the','a','an','for','of','to','and','ready','promotion','promotion-ready','evidence','improve','develop','that','this','about','me','tell']);
+function guessName(q){
+  const words=q.split(/\s+/).map(w=>w.replace(/[?.!,]+$/,'')).filter(Boolean);
+  let bestRun=[],curRun=[];
+  words.forEach(w=>{
+    if(STOPWORDS.has(w.toLowerCase()))(curRun.length>bestRun.length&&(bestRun=curRun),curRun=[]);
+    else curRun.push(w);
+  });
+  if(curRun.length>bestRun.length)bestRun=curRun;
+  return bestRun.length?bestRun.join(' '):null;
+}
+// Compares against the full name AND each individual name part — a first-name-only guess like "Sara" must be
+// judged against "sarah" alone, not penalized for missing the "mitchell" a full-name-only comparison would expect.
+function fuzzyFindEmp(nameGuess){
+  if(!nameGuess)return null;
+  const g=nameGuess.toLowerCase(),gLast=g.split(' ').pop();
+  const surnameHit=EMP.find(e=>e.name.split(' ').pop().toLowerCase()===gLast);
+  if(surnameHit)return surnameHit;
+  let best=null,bestScore=Infinity;
+  EMP.forEach(e=>{
+    const full=e.name.toLowerCase();
+    [full,...full.split(' ')].forEach(c=>{const d=levenshtein(g,c);const score=d/Math.max(g.length,c.length);if(score<bestScore){bestScore=score;best=e;}});
+  });
+  return bestScore<=0.4?best:null;
+}
+// ── Every real Target Role from the Promotion Dashboard column (not hardcoded to just Team Lead) ──
+const KNOWN_ROLES=[...new Set(EMP.map(e=>e.tgt).filter(t=>t&&t!=='—'))];
 function answer(q){const lq=q.toLowerCase();
-  if(lq.includes('ready for')&&(lq.includes('team lead')||lq.includes('lead'))){const r=EMP.filter(e=>e.tgt==='Team Lead'&&e.decision==='READY');return `<b>${r.length}</b> ready for Team Lead: ${r.map(e=>e.name+' ('+e.readiness+'%)').join(', ')||'none yet'}.`;}
+  if(lq.includes('ready for')){
+    const role=KNOWN_ROLES.find(r=>lq.includes(r.toLowerCase()));
+    if(role){const r=EMP.filter(e=>e.tgt===role&&e.decision==='READY');return `<b>${r.length}</b> ready for ${role}: ${r.map(e=>e.name+' ('+e.readiness+'%)').join(', ')||'none yet'}.`;}
+    const asked=(q.split(/ready for/i)[1]||'').trim().replace(/[?.!]+$/,'')||'that role';
+    return `__REDIRECT__We don't have an open role for "${asked}". Roles I can check today: ${KNOWN_ROLES.join(', ')}.`;
+  }
   if(lq.includes('compare')){const names=EMP.filter(e=>lq.includes(e.name.split(' ')[0].toLowerCase()));if(names.length>=2){const[a,b]=names;return `<b>${a.name}</b> ${a.readiness}% vs <b>${b.name}</b> ${b.readiness}%. ${a.readiness>b.readiness?a.name:b.name} leads on readiness; ${a.leadership>b.leadership?a.name:b.name} on leadership (${Math.max(a.leadership,b.leadership)}%).`;}}
   const e=findEmpInText(q);
   if(e){
-    if(lq.includes('why')||lq.includes("isn't")||lq.includes('not ready')){return `${e.name} is <b>${e.decision}</b> (${e.readiness}%). ${e.compliance?'There is an open <b>compliance flag</b> — a hard block regardless of score. ':''}${e.trend==='falling'?'Trajectory is <b>declining</b>. ':''}Weakest areas: ${e.skillGaps.map(g=>g.d+' ('+g.v+'%)').join(', ')}.`;}
-    if(lq.includes('evidence')){return `Evidence for <b>${e.name}</b>: ${e.evals} quality evaluations (avg ${e.q}%), coaching impact ${e.coachingImpact>0?'+':''}${e.coachingImpact} pts, tenure ${e.tenure} mo, confidence ${e.conf}%. Live sources: evaluations + coaching. CSAT, certifications &amp; attendance are mock pending integration.`;}
-    if(lq.includes('improve')||lq.includes('develop')){return `${e.name} should focus on: ${e.skillGaps.map(g=>g.d).join(', ')}. I can route these to the Learning Workspace.`;}
+    if(fuzzyIncludes(lq,'why')||lq.includes("isn't")||lq.includes('not ready')){return `${e.name} is <b>${e.decision}</b> (${e.readiness}%). ${e.compliance?'There is an open <b>compliance flag</b> — a hard block regardless of score. ':''}${e.trend==='falling'?'Trajectory is <b>declining</b>. ':''}Weakest areas: ${e.skillGaps.map(g=>g.d+' ('+g.v+'%)').join(', ')}.`;}
+    if(fuzzyIncludes(lq,'evidence')){return `Evidence for <b>${e.name}</b>: ${e.evals} quality evaluations (avg ${e.q}%), coaching impact ${e.coachingImpact>0?'+':''}${e.coachingImpact} pts, tenure ${e.tenure} mo, confidence ${e.conf}%. Live sources: evaluations + coaching. CSAT, certifications &amp; attendance are mock pending integration.`;}
+    if(fuzzyIncludes(lq,'improve')||fuzzyIncludes(lq,'develop')){return `${e.name} should focus on: ${e.skillGaps.map(g=>g.d).join(', ')}. I can route these to the Learning Workspace.`;}
     return `${e.name} — ${e.cur} → ${e.tgt}. Readiness ${e.readiness}% (${e.decision}), leadership ${e.leadership}%, confidence ${e.conf}%.`;
   }
-  return `I can answer about any of the ${EMP.length} employees — try naming one, e.g. "Why isn't Tom Bradley ready?" or "Who is ready for Team Lead?"`;
+  const guess=guessName(q);
+  const fuzzy=fuzzyFindEmp(guess);
+  if(fuzzy){
+    const corrected=guess?q.replace(new RegExp(guess.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i'),fuzzy.name):fuzzy.name;
+    return `__DIDYOUMEAN__I couldn't find "${escHtml(guess||q)}." Did you mean <b>${fuzzy.name}</b>?|||${corrected}`;
+  }
+  // A name-like guess was extracted but genuinely matches no one — say so specifically, rather than a generic non-answer
+  if(guess)return `__REDIRECT__I don't have anyone matching "${escHtml(guess)}" in this view.`;
+  return `__REDIRECT__I don't have an answer for that yet — I can only speak from the evidence I actually have.`;
 }
 
 // export modal
