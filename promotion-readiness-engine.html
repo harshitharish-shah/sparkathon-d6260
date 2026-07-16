@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promotion Intelligence Platform</title>
+<style>
+:root{
+  --bg:#eef0f6; --panel:#ffffff; --panel-2:#f5f6fb; --panel-3:#eceef7;
+  --sidebar:#151827; --sidebar-2:#1d2133; --sidebar-ink:#c7cbe0; --sidebar-ink-2:#8188a6;
+  --border:#e2e5f0; --border-strong:#cfd3e4;
+  --ink:#1a1d29; --ink-2:#5a6076; --ink-3:#8a90a6;
+  --accent:#5145e6; --accent-2:#7c3aed; --accent-soft:#5145e615;
+  --ready:#15a34a; --ready-bg:#15a34a18; --dev:#c07a09; --dev-bg:#d9770617;
+  --not:#dc2626; --not-bg:#dc262617; --insuf:#5b6bd6; --insuf-bg:#5b6bd617;
+  --live:#0e9f6e; --live-bg:#0e9f6e18; --mock:#b06a12; --mock-bg:#f59e0b1f; --cfg:#64748b; --cfg-bg:#64748b1a;
+  --shadow:0 1px 2px rgba(20,24,45,.05),0 6px 20px rgba(20,24,45,.06);
+  --shadow-lg:0 12px 40px rgba(20,24,45,.16);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,sans-serif;
+  --mono:ui-monospace,"Cascadia Code","SF Mono",Consolas,monospace;
+  --r:12px;
+}
+:root[data-theme="dark"]{
+  --bg:#0b0d14; --panel:#141824; --panel-2:#1b2030; --panel-3:#222839;
+  --sidebar:#0a0c13; --sidebar-2:#161b2a; --sidebar-ink:#c1c6df; --sidebar-ink-2:#767 da0;
+  --sidebar-ink-2:#767da0;
+  --border:#262d40; --border-strong:#333c54;
+  --ink:#e7e9f2; --ink-2:#9aa1b8; --ink-3:#6b7291;
+  --accent:#8b8bff; --accent-2:#b49bff; --accent-soft:#8b8bff1c;
+  --ready:#4ade80; --ready-bg:#22c55e1e; --dev:#fbbf24; --dev-bg:#eab3081e;
+  --not:#f87171; --not-bg:#ef44441e; --insuf:#98a2f2; --insuf-bg:#6366f124;
+  --live:#34d399; --live-bg:#0e9f6e24; --mock:#fbbf5a; --mock-bg:#f59e0b22; --cfg:#94a0b8; --cfg-bg:#64748b26;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 26px rgba(0,0,0,.4);
+  --shadow-lg:0 16px 50px rgba(0,0,0,.55);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b0d14; --panel:#141824; --panel-2:#1b2030; --panel-3:#222839;
+  --sidebar:#0a0c13; --sidebar-2:#161b2a; --sidebar-ink:#c1c6df; --sidebar-ink-2:#767da0;
+  --border:#262d40; --border-strong:#333c54;
+  --ink:#e7e9f2; --ink-2:#9aa1b8; --ink-3:#6b7291;
+  --accent:#8b8bff; --accent-2:#b49bff; --accent-soft:#8b8bff1c;
+  --ready:#4ade80; --ready-bg:#22c55e1e; --dev:#fbbf24; --dev-bg:#eab3081e;
+  --not:#f87171; --not-bg:#ef44441e; --insuf:#98a2f2; --insuf-bg:#6366f124;
+  --live:#34d399; --live-bg:#0e9f6e24; --mock:#fbbf5a; --mock-bg:#f59e0b22; --cfg:#94a0b8; --cfg-bg:#64748b26;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 26px rgba(0,0,0,.4);
+  --shadow-lg:0 16px 50px rgba(0,0,0,.55);
+}}
+*{margin:0;padding:0;box-sizing:border-box}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.app{display:grid;grid-template-columns:236px 1fr;grid-template-rows:56px 1fr;height:100vh;overflow:hidden}
+
+/* ---------- top bar ---------- */
+.topbar{grid-column:1/3;grid-row:1;display:flex;align-items:center;gap:14px;padding:0 18px;background:var(--panel);border-bottom:1px solid var(--border);z-index:30}
+.brand{display:flex;align-items:center;gap:10px;width:206px;flex:0 0 auto}
+.brand .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px}
+.brand .bt{font-weight:700;font-size:14px;letter-spacing:-.01em;line-height:1.1}
+.brand .bs{font-size:9.5px;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase}
+.search{position:relative;flex:1;max-width:440px}
+.search input{width:100%;background:var(--panel-2);border:1px solid var(--border);border-radius:9px;padding:8px 12px 8px 34px;font-size:13px;color:var(--ink)}
+.search input:focus{outline:none;border-color:var(--accent);background:var(--panel)}
+.search svg{position:absolute;left:10px;top:9px;color:var(--ink-3)}
+.search-drop{position:absolute;top:42px;left:0;right:0;background:var(--panel);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);max-height:320px;overflow:auto;display:none;z-index:40}
+.search-drop.show{display:block}
+.search-drop a{display:flex;justify-content:space-between;gap:8px;padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--border);font-size:13px}
+.search-drop a:hover{background:var(--panel-2)}.search-drop a:last-child{border:none}
+.topbar .spacer{flex:1}
+.iconbtn{position:relative;width:36px;height:36px;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--ink-2);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.iconbtn:hover{background:var(--panel-2);color:var(--ink)}
+.iconbtn .dot{position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--not);border:1.5px solid var(--panel)}
+.assistant-btn{display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border:none;border-radius:9px;padding:8px 13px;font-size:12.5px;font-weight:600;cursor:pointer}
+.assistant-btn:hover{filter:brightness(1.07)}
+.user{display:flex;align-items:center;gap:8px;padding-left:6px}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+.role-sel{background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--ink-2);font-size:12px;padding:6px 8px}
+
+/* ---------- sidebar ---------- */
+.sidebar{grid-column:1;grid-row:2;background:var(--sidebar);color:var(--sidebar-ink);overflow-y:auto;display:flex;flex-direction:column;padding:12px 10px}
+.nav-group{font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--sidebar-ink-2);padding:14px 12px 6px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:9px;cursor:pointer;color:var(--sidebar-ink);font-size:13px;font-weight:500;margin-bottom:1px}
+.nav-item:hover{background:var(--sidebar-2)}
+.nav-item.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:600;box-shadow:0 4px 14px -4px var(--accent)}
+.nav-item svg{flex:0 0 auto;opacity:.9}
+.nav-item .badge{margin-left:auto;background:var(--sidebar-2);color:var(--sidebar-ink);font-size:10px;font-weight:700;padding:1px 7px;border-radius:9px}
+.nav-item.active .badge{background:rgba(255,255,255,.22);color:#fff}
+.sidebar .foot{margin-top:auto;padding:12px;font-size:10.5px;color:var(--sidebar-ink-2);line-height:1.5}
+.themetoggle{display:flex;align-items:center;gap:7px;background:var(--sidebar-2);border:none;color:var(--sidebar-ink);border-radius:8px;padding:8px 10px;font-size:11.5px;cursor:pointer;width:100%;margin-bottom:8px}
+
+/* ---------- main ---------- */
+.main{grid-column:2;grid-row:2;overflow-y:auto;padding:22px 26px 60px}
+.page-head{display:flex;align-items:flex-end;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+.page-head h1{font-size:22px;font-weight:750;letter-spacing:-.02em}
+.page-head p{color:var(--ink-2);font-size:13px;margin-bottom:2px}
+.crumb{font-size:11.5px;color:var(--ink-3);margin-bottom:10px}
+.crumb b{color:var(--ink-2)}
+.mockbanner{display:flex;align-items:center;gap:10px;background:var(--mock-bg);border:1px solid #f59e0b40;border-radius:10px;padding:9px 14px;font-size:12px;color:var(--ink);margin-bottom:18px}
+.mockbanner b{color:var(--mock)}
+
+/* generic layout */
+.row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.grid{display:grid;gap:16px;margin-bottom:16px}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}.g5{grid-template-columns:repeat(5,1fr)}.g6{grid-template-columns:repeat(6,1fr)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:16px 17px;box-shadow:var(--shadow)}
+.card h3{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2);font-weight:650;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card h3 .r{margin-left:auto;display:flex;gap:5px}
+.kpi{padding:15px 16px}
+.kpi .v{font-size:27px;font-weight:750;letter-spacing:-.02em;line-height:1}
+.kpi .l{font-size:11.5px;color:var(--ink-2);margin-top:6px}
+.kpi .d{font-size:10.5px;margin-top:5px}
+.kpi .ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:11px;background:var(--accent-soft);color:var(--accent)}
+
+/* source chips */
+.src{font-size:9px;font-weight:700;letter-spacing:.03em;padding:2px 6px;border-radius:5px;text-transform:uppercase;white-space:nowrap;font-family:var(--mono)}
+.src-live{background:var(--live-bg);color:var(--live)}
+.src-mock{background:var(--mock-bg);color:var(--mock)}
+.src-cfg{background:var(--cfg-bg);color:var(--cfg)}
+
+/* pills */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:650;white-space:nowrap}
+.p-ready{background:var(--ready-bg);color:var(--ready)}.p-dev{background:var(--dev-bg);color:var(--dev)}
+.p-not{background:var(--not-bg);color:var(--not)}.p-insuf{background:var(--insuf-bg);color:var(--insuf)}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10.5px;font-weight:600;background:var(--panel-3);color:var(--ink-2);margin:2px 3px 2px 0}
+.tag-r{background:var(--not-bg);color:var(--not)}.tag-g{background:var(--ready-bg);color:var(--ready)}.tag-a{background:var(--accent-soft);color:var(--accent)}
+
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--border);border-radius:var(--r);background:var(--panel);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px}
+thead th{text-align:left;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2);font-weight:650;padding:11px 13px;border-bottom:1px solid var(--border-strong);background:var(--panel-2);white-space:nowrap}
+tbody td{padding:10px 13px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr.clk{cursor:pointer}tbody tr.clk:hover td{background:var(--panel-2)}
+.num{font-variant-numeric:tabular-nums}
+.emp{display:flex;align-items:center;gap:9px}
+.emp .av{width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex:0 0 auto}
+.emp .nm{font-weight:600}.emp .rl{font-size:11px;color:var(--ink-3)}
+
+/* bars */
+.bar{height:7px;border-radius:4px;background:var(--panel-3);overflow:hidden;min-width:60px}
+.bar i{display:block;height:100%;border-radius:4px}
+.scorecell{display:flex;align-items:center;gap:8px}
+.scorecell b{min-width:30px;font-variant-numeric:tabular-nums}
+
+/* filters */
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+.filters select{background:var(--panel);border:1px solid var(--border);border-radius:8px;color:var(--ink);font-size:12.5px;padding:7px 11px}
+.filters select:focus{outline:none;border-color:var(--accent)}
+
+/* buttons */
+.btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer}
+.btn:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent;border:1px solid var(--border-strong);color:var(--ink-2)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn.sm{padding:5px 10px;font-size:11.5px}
+.actbtns{display:flex;gap:6px;flex-wrap:wrap}
+
+/* sub-tabs */
+.subtabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:18px;overflow-x:auto}
+.subtab{padding:9px 14px;cursor:pointer;font-size:13px;color:var(--ink-2);border-bottom:2px solid transparent;white-space:nowrap;font-weight:500}
+.subtab:hover{color:var(--ink)}.subtab.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:650}
+
+/* misc */
+.donut{width:104px;height:104px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;margin:2px auto}
+.donut::before{content:'';position:absolute;inset:12px;background:var(--panel);border-radius:50%}
+.donut .dv{position:relative;font-size:24px;font-weight:750}
+.ai{background:linear-gradient(135deg,var(--accent-soft),transparent);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:13px 15px}
+.ai h4{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.ai p{font-size:13px;line-height:1.55}
+.list-item{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--border)}
+.list-item:last-child{border:none}
+.li-ic{width:32px;height:32px;border-radius:8px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:var(--panel-3);color:var(--ink-2)}
+.li-t{font-size:13px;font-weight:550}.li-s{font-size:11px;color:var(--ink-3)}
+.li-meta{margin-left:auto;font-size:11px;color:var(--ink-3);text-align:right}
+.evi{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:12.5px}
+.evi:last-child{border:none}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--ink-2);margin-top:10px}
+.legend span{display:flex;align-items:center;gap:5px}.sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+.note{font-size:11px;color:var(--ink-3);font-style:italic;margin-top:9px}
+.spider-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.heat td{text-align:center;font-weight:600;font-size:11.5px;border:1px solid var(--bg)}
+.heat th{font-size:10px}.heat .rk{text-align:left;color:var(--ink)}
+.ninebox{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,90px);gap:6px;margin-top:8px}
+.nb{border:1px solid var(--border);border-radius:8px;padding:7px;position:relative;font-size:9.5px;color:var(--ink-3);overflow:hidden}
+.nb .chips{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px}
+.nb .ch{width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.nb-hi{background:var(--ready-bg)}.nb-md{background:var(--dev-bg)}.nb-lo{background:var(--not-bg)}
+
+/* slide-over assistant */
+.overlay{position:fixed;inset:0;background:rgba(10,12,20,.5);z-index:60;display:none}
+.overlay.show{display:block}
+.slideover{position:fixed;top:0;right:0;width:400px;max-width:92vw;height:100vh;background:var(--panel);border-left:1px solid var(--border);box-shadow:var(--shadow-lg);z-index:70;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s}
+.slideover.show{transform:translateX(0)}
+.so-head{padding:15px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px}
+.so-head .t{font-weight:700}.so-head .s{font-size:11px;color:var(--ink-3)}
+.so-body{flex:1;overflow-y:auto;padding:16px 17px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:88%;padding:10px 13px;border-radius:12px;font-size:13px;line-height:1.5}
+.msg.u{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:3px}
+.msg.a{align-self:flex-start;background:var(--panel-2);border:1px solid var(--border);border-bottom-left-radius:3px}
+.msg.a b{color:var(--accent)}
+.so-sug{display:flex;flex-direction:column;gap:6px}
+.so-sug button{text-align:left;background:var(--panel-2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;font-size:12px;color:var(--ink);cursor:pointer}
+.so-sug button:hover{border-color:var(--accent);color:var(--accent)}
+.so-foot{padding:12px 15px;border-top:1px solid var(--border);display:flex;gap:8px}
+.so-foot input{flex:1;background:var(--panel-2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;font-size:13px;color:var(--ink)}
+.so-foot input:focus{outline:none;border-color:var(--accent)}
+
+/* modal */
+.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.96);width:460px;max-width:92vw;background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg);z-index:70;display:none;overflow:hidden}
+.modal.show{display:block;animation:pop .18s ease-out forwards}
+@keyframes pop{to{transform:translate(-50%,-50%) scale(1)}}
+.modal .mh{padding:16px 18px;border-bottom:1px solid var(--border);font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.modal .mb{padding:16px 18px}
+.exp-item{display:flex;align-items:center;gap:11px;padding:11px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;cursor:pointer}
+.exp-item:hover{border-color:var(--accent);background:var(--panel-2)}
+.dropdown{position:absolute;top:46px;right:0;width:330px;background:var(--panel);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);z-index:50;display:none;overflow:hidden}
+.dropdown.show{display:block}
+.dropdown .dh{padding:12px 15px;border-bottom:1px solid var(--border);font-weight:700;font-size:13px;display:flex;justify-content:space-between}
+.dropdown .di{padding:11px 15px;border-bottom:1px solid var(--border);display:flex;gap:10px;font-size:12.5px}
+.dropdown .di:last-child{border:none}
+.dropdown .di .di-ic{width:30px;height:30px;border-radius:8px;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:var(--shadow-lg);z-index:90;opacity:0;transition:.25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:1150px){.g6{grid-template-columns:repeat(3,1fr)}.g5{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}.topbar{grid-column:1}.main{grid-column:1}.g3,.g2{grid-template-columns:1fr}}
+@media print{.topbar,.sidebar,.mockbanner,.filters,.actbtns,.subtabs{display:none!important}.app{display:block;height:auto}.main{overflow:visible;padding:0}}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">PI</div>
+      <div><div class="bt">Promotion Intelligence</div><div class="bs">Talent Decision Platform</div></div>
+    </div>
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <input id="globalSearch" placeholder="Search employees, teams, roles…" autocomplete="off">
+      <div class="search-drop" id="searchDrop"></div>
+    </div>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="notifBtn" title="Notifications"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><span class="dot"></span></button>
+    <div style="position:relative"><div class="dropdown" id="notifDrop"></div></div>
+    <button class="assistant-btn" id="assistBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15l-1.9-4.1L5.5 9l4.6-1.4z"/></svg>Ask AI</button>
+    <select class="role-sel" id="roleSel" title="Viewing as (prototype login) — a real user signs in with one fixed role">
+      <option>Supervisor</option><option>Operations Manager</option><option>HR</option><option>Agent</option>
+    </select>
+    <div class="user" id="userWrap" title="Rachel Torres · Supervisor"><div class="avatar" id="userAvatar">RT</div></div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <!-- MAIN -->
+  <main class="main" id="main"></main>
+</div>
+
+<!-- assistant slide-over -->
+<div class="overlay" id="overlay"></div>
+<aside class="slideover" id="slideover">
+  <div class="so-head">
+    <div class="avatar" style="background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff">AI</div>
+    <div><div class="t">Promotion Assistant</div><div class="s">Explainable AI · grounded in evidence</div></div>
+    <button class="iconbtn" style="margin-left:auto" onclick="closeAssist()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="so-body" id="soBody"></div>
+  <div class="so-foot">
+    <input id="soInput" placeholder="Ask about any employee…" onkeydown="if(event.key==='Enter')sendAssist()">
+    <button class="btn" onclick="sendAssist()">Send</button>
+  </div>
+</aside>
+
+<!-- export modal -->
+<div class="overlay" id="modalOverlay" onclick="closeModal()"></div>
+<div class="modal" id="modal"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================= DATA ============================================================= */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const MGR={1:'Rachel Torres',2:'David Park',3:'Maria Gonzalez',4:'Chris Yang',5:'Steve Richards'};
+const COMP_DIMS=['Communication','Coaching','Leadership','Customer Focus','Ownership','Problem Solving','Collaboration','Learning Agility'];
+const COMP_SRC=['live','live','mock','live','live','mock','mock','mock']; // which competency axes are real vs mock
+
+// [id,name,current,target,bu,site,mgr,q,trend,tenureMo,evalCount]
+const BASE=[
+ [1,'Sarah Mitchell','Sr. Agent','Team Lead','Customer Care',1,1,88,'rising',26,6],
+ [2,'James Okafor','Sr. Agent','Team Lead','Customer Care',1,1,90,'rising',22,5],
+ [3,'Priya Sharma','Agent','Sr. Agent','Billing',1,1,74,'rising',14,4],
+ [4,'Miguel Santos','Agent','Sr. Agent','Technical Support',2,1,76,'flat',18,4],
+ [5,'Emily Chen','Sr. Agent','Team Lead','Technical Support',2,2,94,'rising',30,6],
+ [6,'Marcus Johnson','Agent','Sr. Agent','Retention',2,2,55,'falling',20,4],
+ [7,'Aisha Williams','Agent','Sr. Agent','Customer Care',3,2,76,'rising',10,3],
+ [8,"Ryan O'Brien",'Agent','—','Customer Care',3,2,0,'flat',2,0],
+ [9,'Lisa Nakamura','Sr. Agent','Team Lead','Retention',3,3,84,'rising',34,5],
+ [10,'Tom Bradley','Agent','Sr. Agent','Billing',4,3,62,'flat',22,3],
+ [11,'Fatima Hassan','Agent','Sr. Agent','Technical Support',4,3,78,'rising',13,4],
+ [12,'Kevin Patel','Agent','—','Billing',4,3,67,'flat',9,1],
+ [13,'Nicole Foster','Sr. Agent','Team Lead','Customer Care',5,4,86,'rising',28,5],
+ [14,'Derek Washington','Agent','—','Retention',5,4,40,'falling',24,3],
+ [15,'Anna Kowalski','Agent','Sr. Agent','Technical Support',1,4,85,'rising',16,4],
+ [16,'Brandon Lee','Agent','—','Customer Care',5,4,0,'flat',1,0],
+ [17,'Jasmine Carter','Agent','Sr. Agent','Billing',2,5,83,'rising',12,3],
+ [18,'Daniel Kim','Agent','Sr. Agent','Technical Support',3,5,71,'flat',17,3],
+ [19,'Olivia Bennett','Team Lead','Operations Manager','Customer Care',1,1,91,'rising',40,7],
+ [20,'Ethan Rivera','Team Lead','Quality Manager','Technical Support',2,2,88,'rising',38,6],
+ [21,'Grace Liu','Sr. Agent','Quality Analyst','Billing',1,1,86,'rising',20,5],
+ [22,'Noah Adams','Sr. Agent','WFM Analyst','Technical Support',3,2,84,'rising',18,5],
+ [23,'Maya Ferguson','Agent','Trainer','Retention',2,3,83,'rising',15,4],
+ [24,'Liam Scott','Team Lead','Operations Manager','Retention',3,3,89,'rising',44,7],
+ [25,'Sophia Nguyen','Sr. Agent','Team Lead','Customer Care',4,3,87,'rising',24,5],
+ [26,'Carlos Mendez','Agent','Sr. Agent','Billing',2,5,79,'rising',12,4],
+ [27,'Hannah Kim','Sr. Agent','Quality Analyst','Technical Support',1,4,90,'rising',22,6],
+ [28,'Omar Farouk','Agent','Sr. Agent','Retention',3,2,58,'falling',16,3],
+ [29,'Isabella Rossi','Team Lead','Operations Manager','Customer Care',5,1,92,'rising',46,7],
+ [30,'Jack Thompson','Agent','—','Technical Support',4,2,0,'flat',2,0],
+ [31,'Priyanka Rao','Sr. Agent','WFM Analyst','Billing',2,3,83,'flat',19,5],
+ [32,'David Cohen','Sr. Agent','Knowledge Coordinator','Customer Care',1,5,81,'rising',14,4],
+ [33,'Fatima Noor','Team Lead','Quality Manager','Technical Support',3,4,88,'rising',41,6],
+ [34,'Ryan Cooper','Agent','Digital Support Specialist','Customer Care',2,5,77,'rising',11,3],
+ [35,'Elena Petrova','Sr. Agent','Team Lead','Retention',5,2,85,'rising',26,5],
+ [36,'Marcus Webb','Agent','Sr. Agent','Customer Care',4,1,68,'flat',20,3],
+];
+const SITE={1:'Chicago',2:'Dallas',3:'Seattle',4:'Atlanta',5:'Denver'};
+const COMPLIANCE=new Set([14]);
+const HIGHRISK=new Set([2,13,5,15]);
+
+function series(r,base,trend,n,spread){const out=[];for(let i=0;i<n;i++){const t=i/(n-1);let b=base;if(trend==='rising')b=base-(1-t)*10;else if(trend==='falling')b=base+(1-t)*12;out.push(Math.round(Math.max(15,Math.min(99,b+(r()*spread-spread/2)))));}return out;}
+
+// ── Approval workflow model (chain scales with the target role's seniority tier) ──
+const WF_STAGES=['Supervisor Review','Operations Review','HR Governance','Leadership Approval','Approved']; // master list
+const STAGE_OWNER_MAP={'Supervisor Review':'Supervisor','Operations Review':'Operations Manager','HR Governance':'HR','Leadership Approval':'HR'}; // Leadership→HR until a Leadership/Director persona exists
+const WF_TEMPLATES={1:['Supervisor Review','HR Governance','Approved'],2:['Supervisor Review','Operations Review','HR Governance','Approved'],3:['Supervisor Review','Operations Review','HR Governance','Leadership Approval','Approved']};
+function targetTier(tgt){if(!tgt||tgt==='—')return 1;const t=tgt.toLowerCase();if(t.includes('manager')||t.includes('director')||t.includes('head')||t.includes('vp'))return 3;if(t.includes('lead')||t.includes('analyst')||t.includes('trainer')||t.includes('specialist')||t.includes('consultant')||t.includes('planner'))return 2;return 1;}
+function wfChain(e){return WF_TEMPLATES[targetTier(e.tgt)];}
+const CURRENT_CYCLE='H2 2026';const CYCLES=['H2 2026','H1 2026','H2 2025']; // promotion cycles for the Approved filter
+const EMP=BASE.map(b=>{
+  const [id,name,cur,tgt,bu,site,mgr,q,trendSeed,tenure,evals]=b;
+  const r=rng(id*97+7);
+  const initials=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  // quality series drives consistency + trajectory
+  const wf={quality:series(r,q||50,trendSeed,6,7),csat:series(r,(q||50)-4,trendSeed,6,10),productivity:series(r,(q||55)-2,'flat',6,12),attendance:series(r,82+r()*14,'flat',6,6)};
+  const _sd=a=>{const m=a.reduce((x,y)=>x+y,0)/a.length;return Math.sqrt(a.reduce((x,y)=>x+(y-m)*(y-m),0)/a.length);};
+  const _slope=a=>{const n=a.length,mx=(n-1)/2,my=a.reduce((x,y)=>x+y,0)/n;let nu=0,de=0;a.forEach((y,i)=>{nu+=(i-mx)*(y-my);de+=(i-mx)*(i-mx);});return de?nu/de:0;};
+  // ── Trajectory: computed least-squares slope of the quality series (replaces the seeded label) ──
+  const trSlope=q>0?_slope(wf.quality):0;
+  const trend=q===0?'flat':trSlope>=1.5?'rising':trSlope<=-1.5?'falling':'flat';
+  // ── Consistency (Umbrella 1) ──
+  const consistency=q>0?Math.max(0,Math.round(100-_sd(wf.quality)*5)):0;
+  // ── Umbrella scores: live scored, projected null (this is the real per-umbrella data) ──
+  const tenureScore=Math.min(100,Math.round(tenure/12*100));
+  const umb=q>0?{quality:q,behavior:Math.round(Math.max(20,Math.min(98,q-3+r()*10))),coaching:Math.round(Math.max(20,Math.min(98,q-5+r()*14))),learning:Math.round(40+r()*55),tenure:tenureScore,satisfaction:null,efficiency:null,reliability:null}
+    :{quality:null,behavior:null,coaching:null,learning:null,tenure:tenureScore,satisfaction:null,efficiency:null,reliability:null};
+  const learnProg=umb.learning!=null?umb.learning:Math.round(r()*30);
+  // ── Readiness = weighted composite of present live umbrellas (two-level, renormalized) ──
+  const UW={quality:22,behavior:18,coaching:14,learning:8,tenure:4};const enabledW=66;
+  let _ws=0,_vs=0;Object.keys(UW).forEach(k=>{if(typeof umb[k]==='number'){_ws+=UW[k];_vs+=UW[k]*umb[k];}});
+  const readiness=(typeof umb.quality==='number'&&_ws)?Math.round(_vs/_ws):0; // Quality is the required umbrella — no Quality → no readiness
+  // ── Evidence completeness = coverage × depth ──
+  const presentW=Object.keys(UW).reduce((a,k)=>a+(typeof umb[k]==='number'?UW[k]:0),0);
+  const coverage=presentW/enabledW;const depth=Math.min(1,evals/5);
+  // ── Recency / staleness — stale evidence is DISCOUNTED, not hard-failed ──
+  const daysSinceEval=q>0?Math.round(r()*100):999;const stale=daysSinceEval>90;
+  const evidence=Math.round(100*coverage*depth*(stale?0.5:1));
+  // ── Decision: thresholds + evidence floor + compliance gate ──
+  let decision;
+  if(q===0||evidence<20)decision='INSUFFICIENT DATA';
+  else if(COMPLIANCE.has(id))decision='NOT YET';
+  else if(readiness>=85&&evidence>=60)decision='READY';
+  else if(readiness>=70)decision='DEVELOPING';
+  else decision='NOT YET';
+  // ── Confidence: points (count + recency + consistency + coverage) ──
+  let conf=15;
+  if(q>0){conf=(evals>=5?30:evals>=2?15:5)+(daysSinceEval<=30?20:daysSinceEval<=60?10:0)+(consistency>80?15:0)+Math.round(coverage*35);conf=Math.min(100,conf);}
+  // ── Other signals (mock proxies for talent / other screens) ──
+  const leadership=q>0?Math.round(Math.max(20,Math.min(98,q-6+r()*16+(trend==='rising'?4:0)))):0;
+  const careerFit=q>0?Math.round(Math.max(25,Math.min(97,q-3+r()*12))):0;
+  const potential=q>0?Math.round(Math.max(20,Math.min(98,(readiness*0.5+leadership*0.3+(trend==='rising'?18:trend==='falling'?-6:6))+r()*10))):0;
+  const comps=COMP_DIMS.map((d,i)=>{let off=r()*24-12;if(i===2)off-=6;if(i===5)off-=3;if(i===6)off-=4;if(i===7)off-=8;return q>0?Math.round(Math.max(20,Math.min(98,q+off))):0;});
+  const attrition=HIGHRISK.has(id)?'High':(trend==='falling'?'Medium':(r()>0.7?'Medium':'Low'));
+  const certs=q>0?['Product Fundamentals','De-escalation'].concat(readiness>=82?['Leadership Essentials']:[]).concat(r()>0.6?['Compliance 2026']:[]):[];
+  const managerRec=decision==='READY'?'Recommend':decision==='DEVELOPING'?'Hold — develop':decision==='NOT YET'?(COMPLIANCE.has(id)?'Blocked':'Not yet'):'Insufficient';
+  let status='—';
+  if(decision==='READY')status=id%3===0?'In Review':(id%3===1?'Awaiting Review':'Approved');
+  else if(decision==='DEVELOPING')status='Awaiting Review';
+  else if(COMPLIANCE.has(id))status='On Hold';
+  const skillGaps=COMP_DIMS.map((d,i)=>({d,v:comps[i],src:COMP_SRC[i]})).filter(x=>x.v>0).sort((a,b)=>a.v-b.v).slice(0,3);
+  // ── Eligibility: an axis INDEPENDENT of readiness (Ch 8.6) — policy prerequisites ──
+  const MIN_TENURE=6;const eligReasons=[];
+  // "no evaluations" is a data-sufficiency concern (Confidence / INSUFFICIENT DATA), NOT an eligibility rule
+  if(tenure<MIN_TENURE)eligReasons.push('Below minimum tenure ('+tenure+'/'+MIN_TENURE+' mo)');
+  if(COMPLIANCE.has(id))eligReasons.push('Open compliance flag');
+  if(q>0&&certs.length===0)eligReasons.push('Mandatory certification incomplete');
+  const eligible=eligReasons.length===0;
+  // ── Career aspiration (employee write-back; mock seed) ──
+  const ASPIR=['Team Lead','QA Analyst','Trainer / L&D','WFM Analyst','Specialist (stay in role)'];
+  const aspiration=q>0?ASPIR[id%ASPIR.length]:'Not set';
+  const managerNotes=q>0?[{by:MGR[mgr],when:'3 wk ago',t:'Strong on '+COMP_DIMS[comps.indexOf(Math.max(...comps))]+'. Discussed next-role stretch goals in 1:1.'}]:[];
+  // ── Succession readiness category (Ch 10.5) ──
+  let successionCat='—';
+  if(q>0){if(decision==='READY'&&eligible)successionCat='Ready Now';
+    else if(readiness>=80&&trend==='rising')successionCat='Ready in 6 Months';
+    else if(readiness>=70)successionCat='Ready in 12 Months';
+    else if(readiness>=55)successionCat='Long-Term Potential';
+    else successionCat='Emerging Talent';}
+  // ── Approval workflow stage (Ch 5 / 9.11): only READY candidates enter the chain ──
+  const _chain=WF_TEMPLATES[targetTier(tgt)];const wfStage=decision==='READY'?(id%(_chain.length-1)):-1; // -1 = not in workflow; else an index into the target's approval chain (action stages only)
+  return {id,name,initials,cur,tgt,bu,site:SITE[site],siteKey:site,mgr:MGR[mgr],mgrKey:mgr,q,trend,tenure,evals,
+    readiness,decision,umb,evidence,consistency,daysSinceEval,stale,leadership,careerFit,potential,comps,conf,attrition,learnProg,certs,wf,managerRec,status,skillGaps,
+    eligible,eligReasons,aspiration,managerNotes,successionCat,wfStage,wfHistory:[],
+    compliance:COMPLIANCE.has(id),coachingImpact:q>0?Math.round((r()*10-2)*10)/10:null};
+});
+// Open requisitions (business need) — normally from WFM/HR headcount planning; a promotion needs a funded seat to move into
+const OPEN_REQS=[{role:'Team Lead',site:'Chicago',count:2,req:'REQ-1042'},{role:'Team Lead',site:'Dallas',count:1,req:'REQ-1051'},{role:'Operations Manager',site:'Denver',count:1,req:'REQ-1039'},{role:'Sr. Agent',site:'Any site',count:3,req:'REQ-1071'},{role:'Quality Analyst',site:'Seattle',count:1,req:'REQ-1067'},{role:'WFM Analyst',site:'Any site',count:1,req:'REQ-1080'},{role:'Digital Support Specialist',site:'Any site',count:2,req:'REQ-1090'},{role:'Knowledge Coordinator',site:'Any site',count:1,req:'REQ-1093'}];
+const openReqFor=e=>OPEN_REQS.find(r=>r.role===e.tgt); // matched open requisition for the target role (null = none)
+const bizNeed=e=>!!openReqFor(e);
+const ACTOR={Supervisor:'Rachel Torres','Operations Manager':'Daniel Wu',HR:'Karen Blake',Agent:'Agent'}; // logged-in actor per role
+const byId=id=>EMP.find(e=>e.id===+id);
+// seed a few historical approvals so the Approved view + cycle filter have content
+[[2,'H1 2026'],[13,'H1 2026'],[9,'H2 2025'],[25,'H2 2026'],[27,'H1 2026']].forEach(([id,cyc])=>{const e=byId(id);if(!e||e.readiness===0)return;const ch=wfChain(e);e.wfStage=ch.length-1;e.status='Approved';e.eligible=true;e.approvedCycle=cyc;
+  e.wfHistory=ch.slice(0,-1).map(st=>({when:cyc,by:STAGE_OWNER_MAP[st]==='Supervisor'?e.mgr:(STAGE_OWNER_MAP[st]==='Operations Manager'?'Daniel Wu':'Karen Blake'),role:STAGE_OWNER_MAP[st],stage:st,action:'Approved & advanced',reason:'Met the bar'})).reverse();});
+// sit a couple of manager-track (Tier 3) cases at Leadership Approval so that stage is visible
+[20,24].forEach(id=>{const e=byId(id);if(e&&e.readiness>0){e.wfStage=wfChain(e).length-2;e.status=wfChain(e)[e.wfStage];}});
+const fmtTrend=t=>t==='rising'?'<span style="color:var(--ready)">↑ Rising</span>':t==='falling'?'<span style="color:var(--not)">↓ Falling</span>':'<span style="color:var(--dev)">→ Flat</span>';
+function stat(){const w=EMP.filter(e=>e.readiness>0);return{total:EMP.length,ready:EMP.filter(e=>e.decision==='READY').length,dev:EMP.filter(e=>e.decision==='DEVELOPING').length,not:EMP.filter(e=>e.decision==='NOT YET').length,insuf:EMP.filter(e=>e.decision==='INSUFFICIENT DATA').length,avg:Math.round(w.reduce((s,e)=>s+e.readiness,0)/w.length),conf:Math.round(w.reduce((s,e)=>s+e.conf,0)/w.length),highrisk:EMP.filter(e=>e.attrition==='High').length};}
+
+/* ============================================================= HELPERS ============================================================= */
+const pillCls=d=>({'READY':'p-ready','DEVELOPING':'p-dev','NOT YET':'p-not','INSUFFICIENT DATA':'p-insuf'}[d]||'p-insuf');
+const pill=d=>`<span class="pill ${pillCls(d)}">${d}</span>`;
+const eligPill=e=>e.readiness===0?'<span class="pill p-insuf">N/A</span>':e.eligible?'<span class="pill p-ready">Eligible</span>':`<span class="pill p-not" title="${e.eligReasons.join('; ')}">Ineligible</span>`;
+const clr=v=>v>=85?'var(--ready)':v>=70?'var(--dev)':v>=45?'var(--mock)':'var(--not)';
+function bar(v){return`<div class="bar"><i style="width:${Math.max(0,Math.min(100,v))}%;background:${clr(v)}"></i></div>`;}
+function scoreCell(v){return v>0?`<div class="scorecell"><b>${v}%</b>${bar(v)}</div>`:'<span style="color:var(--ink-3)">—</span>';}
+const SRC={live:'<span class="src src-live" title="Live NIA/Enlighten data">NIA · live</span>',
+  wfm:'<span class="src src-mock" title="Capability confirmed in NICE WFM; mock in prototype">WFM · mock</span>',
+  pm:'<span class="src src-mock" title="NICE Performance Management; mock in prototype">PM · mock</span>',
+  voc:'<span class="src src-mock" title="Voice of Customer / survey; mock">VoC · mock</span>',
+  lms:'<span class="src src-mock" title="External LMS; V3">LMS · mock</span>',
+  hris:'<span class="src src-mock" title="External HRIS; V2/V3">HRIS · mock</span>',
+  grc:'<span class="src src-mock" title="Governance/compliance; V3">GRC · mock</span>',
+  ml:'<span class="src src-mock" title="Rule-based proxy; real ML needs history">ML · proxy</span>',
+  cfg:'<span class="src src-cfg" title="Admin configuration">config</span>',
+  ia:'<span class="src src-mock" title="Interaction Analytics; capability confirmed">IA · mock</span>'};
+function donut(v){const c=clr(v);return`<div class="donut" style="background:conic-gradient(${c} ${v}%,var(--panel-3) 0)"><span class="dv" style="color:${c}">${v>0?v:'—'}${v>0?'%':''}</span></div>`;}
+const avatar=(e,cls='av')=>`<div class="${cls}">${e.initials}</div>`;
+function empCell(e){return`<div class="emp">${avatar(e)}<div><div class="nm">${e.name}</div><div class="rl">${e.cur} · ${e.site}</div></div></div>`;}
+
+/* --- SVG charts --- */
+function radar(vals){const cx=130,cy=108,R=80,n=vals.length;let axes='',poly='',labels='';
+  for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n;const x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);
+    axes+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--border)" stroke-width="1"/>`;
+    const lx=cx+(R+16)*Math.cos(a),ly=cy+(R+16)*Math.sin(a);const anc=Math.abs(Math.cos(a))<.3?'middle':(Math.cos(a)>0?'start':'end');
+    labels+=`<text x="${lx}" y="${ly+3}" font-size="9" fill="var(--ink-2)" text-anchor="${anc}">${COMP_DIMS[i].split(' ')[0]}</text>`;
+    const rr=R*(vals[i]/100);const px=cx+rr*Math.cos(a),py=cy+rr*Math.sin(a);poly+=`${px},${py} `;}
+  let rings='';for(const f of [.33,.66,1]){let p='';for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n;p+=`${cx+R*f*Math.cos(a)},${cy+R*f*Math.sin(a)} `;}rings+=`<polygon points="${p}" fill="none" stroke="var(--border)" stroke-width="1"/>`;}
+  return`<svg viewBox="0 0 260 216" width="240">${rings}${axes}<polygon points="${poly}" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>${labels}</svg>`;}
+function lineChart(seriesArr,labels,colors){const W=340,H=140,pad=24;const all=seriesArr.flat();const mn=Math.min(...all)-4,mx=Math.max(...all)+4;
+  const n=seriesArr[0].length;const sx=i=>pad+i*(W-pad*2)/(n-1);const sy=v=>H-pad-(v-mn)/(mx-mn)*(H-pad*2);
+  let grid='';for(let g=0;g<=3;g++){const y=pad+g*(H-pad*2)/3;grid+=`<line x1="${pad}" y1="${y}" x2="${W-pad}" y2="${y}" stroke="var(--border)" stroke-width="1"/>`;}
+  let lines='';seriesArr.forEach((s,si)=>{let p='';s.forEach((v,i)=>p+=`${i?'L':'M'}${sx(i)},${sy(v)} `);lines+=`<path d="${p}" fill="none" stroke="${colors[si]}" stroke-width="2.2" stroke-linejoin="round"/>`;lines+=`<circle cx="${sx(n-1)}" cy="${sy(s[n-1])}" r="3.4" fill="${colors[si]}"/>`;});
+  let leg='';labels.forEach((l,i)=>leg+=`<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-2)"><span style="width:10px;height:3px;border-radius:2px;background:${colors[i]}"></span>${l}</span>`);
+  return`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px">${grid}${lines}</svg><div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:6px">${leg}</div>`;}
+function spark(s,c){const W=100,H=28;const mn=Math.min(...s),mx=Math.max(...s);const sx=i=>i*W/(s.length-1);const sy=v=>H-2-(v-mn)/((mx-mn)||1)*(H-6);let p='';s.forEach((v,i)=>p+=`${i?'L':'M'}${sx(i)},${sy(v)} `);return`<svg viewBox="0 0 ${W} ${H}" width="100" height="28" preserveAspectRatio="none"><path d="${p}" fill="none" stroke="${c||'var(--accent)'}" stroke-width="2"/></svg>`;}
+
+/* ============================================================= NAV ============================================================= */
+const ICON={
+ home:'M3 10.5 12 3l9 7.5M5 9v11h14V9',
+ promotion:'M12 21a9 9 0 100-18 9 9 0 000 18M8 13l4-4 4 4',
+ employee:'M12 12a4 4 0 100-8 4 4 0 000 8M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6',
+ career:'M7 21V4h10l-2 3 2 3H7M7 21h6',
+ talent:'M4 4h5v5H4zM15 4h5v5h-5zM9.5 9.5h5v5h-5zM4 15h5v5H4zM15 15h5v5h-5z',
+ workforce:'M4 21V5l8-2 8 2v16M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h6',
+ learning:'M3 9l9-4 9 4-9 4-9-4zM7 11v5c0 1.3 2.5 3 5 3s5-1.7 5-3v-5',
+ analytics:'M4 20V4M4 20h16M8 20v-6M13 20v-10M18 20v-4',
+ admin:'M5 8h9M18 8h1M5 16h1M10 16h9M13 5v6M8 13v6'};
+const NAV=[
+ {id:'home',label:'Home',icon:'home'},
+ {id:'promotion',label:'Promotion',icon:'promotion',badge:()=>stat().ready+stat().dev},
+];
+let current='home',selEmp=EMP[0],empTab='overview',promoSub='dashboard',careerSub='dashboard',talentSub='ninebox';
+// ── Role-based access (Ch 14 / 18.13): which workspaces each persona can see ──
+const ROLE_PERM={
+ Supervisor:['home','promotion','employee'],
+ 'Operations Manager':['home','promotion','employee'],
+ HR:['home','promotion','employee'],
+ Agent:['employee'],
+};
+let viewRole='HR';
+const allowed=id=>ROLE_PERM[viewRole].includes(id);
+function icon(name,sz=18){return`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="${ICON[name]}"/></svg>`;}
+function renderNav(){
+  const s=document.getElementById('sidebar');
+  s.innerHTML=`<div class="nav-group">Workspaces · <span style="color:var(--sidebar-ink)">${viewRole}</span></div>`+
+   NAV.filter(n=>allowed(n.id)).map(n=>`<div class="nav-item ${current===n.id?'active':''}" onclick="go('${n.id}')">${icon(n.icon)}<span>${n.label}</span>${n.badge?`<span class="badge">${n.badge()}</span>`:''}</div>`).join('')+
+   `<div class="foot">
+      <button class="themetoggle" onclick="toggleTheme()">◑ Toggle theme</button>
+      <b style="color:var(--sidebar-ink)">Prototype v1.0</b><br>Mixed live + mock data.<br>Chips mark each source.
+    </div>`;
+}
+function go(id){if(!allowed(id)){toast(viewRole+' role has no access to that workspace');return;}current=id;if(id!=='employee')window.scrollTo?.(0,0);document.getElementById('main').scrollTop=0;renderNav();render();}
+function setRole(rl){viewRole=rl;if(!allowed(current))current=ROLE_PERM[viewRole][0];if(viewRole==='Agent'&&current==='employee')selEmp=EMP[0];updateUser();renderNav();render();toast(rl==='Agent'?'Viewing as Agent — your own profile':'Viewing as '+rl+' — navigation now role-scoped');}
+function updateUser(){const nm=viewRole==='Agent'?(selEmp?selEmp.name:'Agent'):(ACTOR[viewRole]||viewRole);const av=document.getElementById('userAvatar');if(av){av.textContent=nm.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();const w=document.getElementById('userWrap');if(w)w.title=nm+' · '+viewRole;}}
+
+/* ============================================================= RENDER ROUTER ============================================================= */
+function render(){document.getElementById('main').innerHTML=({home:pHome,promotion:pPromotion,employee:pEmployee,career:pCareer,talent:pTalent,workforce:pWorkforce,learning:pLearning,analytics:pAnalytics,admin:pAdmin}[current]||pHome)();}
+function head(title,sub,crumb,actions){return`<div class="crumb">${crumb||'Home'}</div><div class="page-head"><h1>${title}</h1><p>${sub||''}</p>${actions?`<div class="actbtns" style="margin-left:auto">${actions}</div>`:''}</div>`;}
+// ── Login scope: which population a role sees (set at login, not chosen on-screen) ──
+function roleScope(){
+  return viewRole==='Supervisor' ? (e=>e.mgrKey===1)                     // a Supervisor sees only their own team
+       : viewRole==='Operations Manager' ? (e=>[1,2,3].includes(e.mgrKey)) // the supervisors they oversee
+       : (e=>true);                                                       // HR: the whole business unit
+}
+const mockBanner=`<div class="mockbanner">⚠️ <b>Prototype</b> · This is a design preview. Widgets are tagged with their data source — <span class="src src-live">NIA · live</span> is real today; <span class="src src-mock">· mock</span> needs an integration (WFM / LMS / HRIS / VoC / GRC).</div>`;
+
+/* ---------------- HOME ---------------- */
+function pHome(){
+  // ── Scope is decided at login: each role sees only its own population (no manual filter) ──
+  const OWNER={Supervisor:'Rachel Torres','Operations Manager':'Daniel Wu',HR:'Karen Blake'};
+  const scopeWord={Supervisor:'team','Operations Manager':'teams and sites',HR:'business unit'}[viewRole]||'scope';
+  const sc=EMP.filter(roleScope()), scv=sc.filter(e=>e.readiness>0);
+  const cnt={
+    awaiting: sc.filter(e=>e.status==='Awaiting Review').length,
+    pending: sc.filter(e=>e.status==='In Review').length,
+    highrisk: sc.filter(e=>e.attrition==='High').length,
+    coaching: sc.filter(e=>e.readiness>0&&(e.trend==='falling'||e.decision==='DEVELOPING')).length,
+    dev: sc.filter(e=>e.readiness>0&&e.learnProg<75).length,
+    career: sc.filter(e=>e.careerFit>=70).length,
+    bench: sc.filter(e=>e.decision==='READY').length,
+    ready: sc.filter(e=>e.decision==='READY').length,
+    developing: sc.filter(e=>e.decision==='DEVELOPING').length,
+  };
+  // ── role-specific tile set (per the "what each profile sees" matrix) ──
+  let tiles=[
+    kpi('Awaiting Review',cnt.awaiting,'promotion','var(--accent)'),
+    kpi('Promotions Pending',cnt.pending,'promotion','var(--dev)'),
+    kpi('High-Risk',cnt.highrisk,'employee','var(--not)'),
+  ];
+  if(viewRole!=='HR') tiles.push(kpi('Coaching Pending',cnt.coaching,'employee','var(--dev)'));          // HR does not carry coaching
+  tiles.push(kpi('Development Actions (Incubator)',cnt.dev,'learning','var(--accent)'));
+  tiles.push(kpi('Career Recommendations',cnt.career,'career','var(--accent-2)'));
+  if(viewRole!=='Supervisor') tiles.push(kpi('Bench Strength',cnt.bench,'talent','var(--ready)'));       // Ops Mgr + HR only
+  // ── Pending Tasks — generated from the scoped population ──
+  const tasks=[];
+  sc.filter(e=>e.status==='Awaiting Review').slice(0,3).forEach(e=>tasks.push({t:e.name+' — awaiting your review',s:'Readiness '+e.readiness+'% · '+e.decision,ic:'promotion',m:e.attrition==='High'?'urgent':'review'}));
+  sc.filter(e=>e.trend==='falling').slice(0,2).forEach(e=>tasks.push({t:e.name+' — declining trajectory',s:'Coaching recommended',ic:'employee',m:'action'}));
+  sc.filter(e=>e.compliance).slice(0,2).forEach(e=>tasks.push({t:e.name+' — compliance flag',s:'Hard block on promotion',ic:'admin',m:'blocked'}));
+  // ── AI Insights — scoped ──
+  const riskNames=sc.filter(e=>e.attrition==='High').map(e=>e.name.split(' ')[0]).slice(0,2);
+  const fallNames=sc.filter(e=>e.trend==='falling').map(e=>e.name.split(' ')[0]).slice(0,2);
+  const bySite={};scv.forEach(e=>{if(e.decision==='READY')bySite[e.site]=(bySite[e.site]||0)+1;});
+  const topSite=Object.entries(bySite).sort((a,b)=>b[1]-a[1])[0]?.[0]||'';
+  // ── Recent Activity — scoped ──
+  const topReady=sc.find(e=>e.decision==='READY'), firstRisk=sc.find(e=>e.attrition==='High');
+  const activity=[];
+  if(topReady)activity.push({t:'You reviewed '+topReady.name+' for calibration',s:'2 hours ago'});
+  activity.push({t:cnt.ready+' candidate'+(cnt.ready===1?'':'s')+' in the current promotion cycle',s:'Today, 9:12 AM'});
+  if(firstRisk)activity.push({t:firstRisk.name+' flagged high flight-risk',s:'Yesterday'});
+  activity.push({t:'Coaching impact recalculated for '+scv.length+' agents',s:'Yesterday'});
+  // ── Quick Actions — role-specific shortcuts ──
+  const QA={
+    Supervisor:[['Review Promotions',"go('promotion')",''],['View Employee',"go('employee')",'ghost'],['Compare Employees',"promoSub='compare';go('promotion')",'ghost'],['Generate Promotion Packet',"openExport()",'ghost']],
+    'Operations Manager':[['Review Promotions',"go('promotion')",''],['Compare Employees',"promoSub='compare';go('promotion')",'ghost'],['Open Consistency Review',"promoSub='consistency';go('promotion')",'ghost'],['Generate Promotion Packet',"openExport()",'ghost']],
+    HR:[['Review Promotions',"go('promotion')",''],['Open Consistency Review',"promoSub='consistency';go('promotion')",'ghost'],['Approvals & Governance',"promoSub='workflow';go('promotion')",'ghost'],['Generate Promotion Packet',"openExport()",'ghost']],
+  }[viewRole]||[];
+  return head('Good morning, '+(OWNER[viewRole]||'there'),'Across your '+scopeWord+' — here is what needs your attention today.','Home')+mockBanner+
+  `<div class="grid g6">${tiles.join('')}</div>
+  <p class="note">Every tile is scoped to your ${scopeWord} (${sc.length} people) — the scope is set at login, not chosen here. Sources — <b>Awaiting Review</b> &amp; <b>Promotions Pending</b>: approval-workflow module · <b>High-Risk</b>: attrition proxy (ML) · <b>Career Recommendations</b>: career engine · <b>Coaching Pending</b>: NIA <code>detCoachingAction</code> (live) · <b>Development Actions</b>: Talent Incubator / external learning system.</p>
+  <div class="grid g3" style="grid-template-columns:1.3fr 1fr 1fr">
+    <div class="card"><h3>Pending Tasks <span class="r">${SRC.ml}</span></h3>
+      ${tasks.length?tasks.map(t=>`<div class="list-item"><div class="li-ic">${icon(t.ic,16)}</div><div><div class="li-t">${t.t}</div><div class="li-s">${t.s}</div></div><div class="li-meta">${t.m}</div></div>`).join(''):'<div class="li-s">No pending tasks in your '+scopeWord+'.</div>'}
+    </div>
+    <div class="card"><h3>AI Insights <span class="r">${SRC.ml}</span></h3>
+      <div class="ai" style="margin-bottom:10px"><h4>🎯 Pipeline</h4><p><b>${cnt.ready}</b> ${cnt.ready===1?'agent is':'agents are'} promotion-ready; <b>${cnt.developing}</b> are close.${topSite?' '+topSite+' has the strongest bench.':''}</p></div>
+      <div class="ai" style="margin-bottom:10px"><h4>⚠️ Retention</h4><p>${riskNames.length?'<b>'+cnt.highrisk+'</b> high flight-risk — prioritise '+riskNames.join(' &amp; ')+'.':'No high flight-risk agents in your '+scopeWord+'.'}</p></div>
+      <div class="ai"><h4>📉 Watch</h4><p>${fallNames.length?fallNames.join(' &amp; ')+(fallNames.length===1?' shows':' show')+' declining trajectories.':'No declining trajectories in your '+scopeWord+'.'}</p></div>
+    </div>
+    <div class="card"><h3>Recent Activity <span class="li-s" style="font-weight:400">· last 7 days</span></h3>
+      ${activity.map(a=>`<div class="list-item"><div class="li-ic">${icon('analytics',15)}</div><div><div class="li-t" style="font-weight:500">${a.t}</div><div class="li-s">${a.s}</div></div></div>`).join('')}
+    </div>
+  </div>
+  <div class="card"><h3>Quick Actions</h3><div class="actbtns">
+    ${QA.map(a=>`<button class="btn ${a[2]}" onclick="${a[1]}">${a[0]}</button>`).join('')}
+  </div></div>`;
+}
+function kpi(label,val,ic,c){return`<div class="card kpi"><div class="ic" style="background:${c}1c;color:${c}">${icon(ic,17)}</div><div class="v" style="color:${c}">${val}</div><div class="l">${label}</div></div>`;}
+
+/* ---------------- PROMOTION ---------------- */
+let pf={site:'',bu:'',status:'',dec:'',mgr:''};
+let wfView='active',wfCycle=''; // Approval Workflow sub-tab + cycle filter
+let calCohort='',calBar=85; // Consistency Review (anomaly tracker): cohort (target role) + bar
+let cmpMode='position',cmpRole='',cmpList=[]; // Compare Candidates: mode (position/custom), selected role, custom agent ids
+let selCycle=CURRENT_CYCLE; // active promotion-cycle context (shared cycle list = CYCLES)
+function pPromotion(){
+  const sub=`<div class="subtabs">
+    ${['dashboard|Promotion Dashboard','workflow|Approval Workflow','compare|Compare Candidates','consistency|Consistency Review','packet|Promotion Packet'].map(x=>{const[k,l]=x.split('|');return`<div class="subtab ${promoSub===k?'on':''}" onclick="promoSub='${k}';render()">${l}</div>`;}).join('')}
+  </div>`;
+  return head('Promotion Workspace','Evaluate, compare and approve promotion candidates.','Home › Promotion')+sub+
+    ({dashboard:promoDash,queue:promoQueue,workflow:promoWorkflow,consistency:promoConsistency,compare:promoCompare,packet:promoPacket}[promoSub])();
+}
+function promoDash(){
+  let list=EMP.filter(roleScope()).sort((a,b)=>b.readiness-a.readiness);
+  if(pf.site)list=list.filter(e=>e.siteKey==pf.site);if(pf.bu)list=list.filter(e=>e.bu===pf.bu);if(pf.dec)list=list.filter(e=>e.decision===pf.dec);if(pf.mgr)list=list.filter(e=>e.mgr===pf.mgr);
+  const sw=list.filter(e=>e.readiness>0);
+  const s={ready:list.filter(e=>e.decision==='READY').length,dev:list.filter(e=>e.decision==='DEVELOPING').length,not:list.filter(e=>e.decision==='NOT YET').length,insuf:list.filter(e=>e.decision==='INSUFFICIENT DATA').length,avg:sw.length?Math.round(sw.reduce((a,e)=>a+e.readiness,0)/sw.length):0,conf:sw.length?Math.round(sw.reduce((a,e)=>a+e.conf,0)/sw.length):0};
+  // ── Filters are profile-specific (scope is set at login) ──
+  const showSite=viewRole!=='Supervisor';        // a Supervisor sees one team → no site filter
+  const showMgr=viewRole==='Operations Manager'||viewRole==='HR';
+  const showBU=viewRole==='HR';
+  const fSite=showSite?`<select onchange="pf.site=this.value;render()"><option value="">All locations</option>${Object.entries(SITE).map(([k,v])=>`<option value="${k}" ${pf.site==k?'selected':''}>${v}</option>`).join('')}</select>`:'';
+  const fMgr=showMgr?`<select onchange="pf.mgr=this.value;render()"><option value="">All supervisors</option>${[...new Set(EMP.map(e=>e.mgr))].map(m=>`<option ${pf.mgr===m?'selected':''}>${m}</option>`).join('')}</select>`:'';
+  const fBU=showBU?`<select onchange="pf.bu=this.value;render()"><option value="">All business units</option>${[...new Set(EMP.map(e=>e.bu))].map(b=>`<option ${pf.bu===b?'selected':''}>${b}</option>`).join('')}</select>`:'';
+  const fDec=`<select onchange="pf.dec=this.value;render()"><option value="">All readiness</option>${['READY','DEVELOPING','NOT YET','INSUFFICIENT DATA'].map(d=>`<option ${pf.dec===d?'selected':''}>${d}</option>`).join('')}</select>`;
+  return `<div class="filters">
+    ${fSite}${fMgr}${fBU}${fDec}
+    <select onchange="selCycle=this.value.replace('Promotion Cycle · ','');render()">${CYCLES.map(c=>`<option ${c===selCycle?'selected':''}>Promotion Cycle · ${c}</option>`).join('')}</select>
+  </div>
+  <div class="grid" style="grid-template-columns:repeat(7,1fr)">
+    ${kpi('Total Agents',list.length,'employee','var(--ink-2)')}
+    ${kpi('Promotion Ready',s.ready,'promotion','var(--ready)')}
+    ${kpi('Developing',s.dev,'employee','var(--dev)')}
+    ${kpi('Not Yet',s.not,'employee','var(--not)')}
+    ${kpi('Insufficient',s.insuf,'employee','var(--insuf)')}
+    ${kpi('Avg Readiness',s.avg+'%','analytics','var(--accent)')}
+    ${kpi('Avg Confidence',s.conf+'%','analytics','var(--accent-2)')}
+  </div>
+  ${promoTable(list)}
+  <p class="note"><b>Readiness</b> is the umbrella-model composite — live NIA umbrellas today (Quality, Conversation &amp; Behavior, Coaching, Tenure), with more added as products connect. <b>Career Fit</b> needs role profiles configured to enable. <b>Eligibility</b> is a separate axis (tenure + certifications + compliance/conduct) — its rules pull from HRIS/LMS/GRC. All KPI cards and the list are scoped to your role and any filters.</p>`;
+}
+function promoTable(list){
+  return `<div class="tw"><table><thead><tr>
+    <th>Employee</th>${viewRole!=='Supervisor'?'<th>Supervisor</th>':''}<th>Target Role</th><th>Readiness ${SRC.live}</th><th>Confidence ${SRC.live}</th><th>Career Fit ${SRC.cfg}</th><th>Eligibility ${SRC.cfg}</th><th>Supervisor Recommendation</th><th>Approval Status</th><th>Actions</th>
+  </tr></thead><tbody>
+  ${list.map(e=>`<tr class="clk"><td onclick="openEmp(${e.id})">${empCell(e)}</td>${viewRole!=='Supervisor'?`<td style="font-size:12px">${e.mgr}</td>`:''}
+    <td>${e.tgt==='—'?'<span style="color:var(--ink-3)">—</span>':e.tgt}</td>
+    <td style="min-width:135px">${scoreCell(e.readiness)}<div style="margin-top:3px">${pill(e.decision)} <span class="li-s">${fmtTrend(e.trend)}</span></div></td>
+    <td class="num">${e.readiness>0?e.conf+'%':'—'}</td>
+    <td class="num" title="Configure role profiles to enable"><span style="color:var(--ink-3)">— · set up</span></td>
+    <td>${eligPill(e)}</td>
+    <td style="font-size:12px">${e.managerRec}</td>
+    <td>${e.compliance?'<span class="tag">On hold · compliance</span>':e.wfStage<0?'<span style="color:var(--ink-3)">Not submitted</span>':e.wfStage>=wfChain(e).length-1?'<span class="tag tag-g">Approved</span>':`<span class="tag">Pending · ${wfChain(e)[e.wfStage]}</span>`}</td>
+    <td><div class="actbtns">
+      <button class="btn sm ghost" onclick="openEmp(${e.id})">Open</button>
+      ${viewRole==='Supervisor'?(e.decision==='READY'?`<button class="btn sm" onclick="event.stopPropagation();toast('Recommended ${e.name} (mock)')">Recommend</button>`:''):viewRole==='Operations Manager'?`<button class="btn sm ghost" onclick="event.stopPropagation();promoSub='compare';go('promotion')">Compare</button>`:`<button class="btn sm ghost" onclick="event.stopPropagation();selEmp=byId(${e.id});promoSub='packet';go('promotion')">Packet</button>`}
+    </div></td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+// ── Approval Workflow (Ch 5 / 9.11): Manager → Ops → HR → Leadership, auditable ──
+// Themed reason modal for every workflow action; each action is recorded to the candidate's audit trail
+function openWfModal(id,action){
+  const e=byId(id);if(!e)return;
+  if(action==='advance'){
+    const owner=STAGE_OWNER_MAP[wfChain(e)[e.wfStage]];
+    if(owner!==viewRole){toast('Only '+owner+' can advance this stage');return;}
+    if(!e.eligible){toast('Cannot advance — '+e.name+' is ineligible ('+e.eligReasons.join('; ')+')');return;}
+    if(e.wfStage===wfChain(e).length-2&&!bizNeed(e)){toast('Cannot approve — no open role (business need) for '+e.tgt);return;}
+  }
+  const meta={
+    advance:['Approve & advance','Move '+e.name+' to '+wfChain(e)[Math.min(e.wfStage+1,wfChain(e).length-1)]+'. Add a reason for the record.','Reason (optional)','Approve & advance'],
+    sendback:['Send back','Return '+e.name+' one stage. A reason is required.','Reason (required)','Send back'],
+    evidence:['Request evidence','Ask '+e.mgr+' (the supervisor) to supply more evidence on '+e.name+' before deciding.','What evidence is needed?','Send request'],
+    delay:['Delay decision','Put '+e.name+' on hold. Add a reason for the record.','Reason','Delay'],
+    provide:['Provide evidence',(e.evidenceReq?'Requested: “'+e.evidenceReq.what+'”. ':'')+'Attach or describe the evidence for '+e.name+' (adds it to the Evidence Locker).','Describe the evidence / attachment reference','Submit evidence']
+  }[action];
+  const ov=document.getElementById('modalOverlay'),m=document.getElementById('modal');
+  ov.classList.add('show');m.classList.add('show');
+  m.innerHTML=`<div class="mh">${meta[0]} <button class="iconbtn" onclick="closeModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="mb">
+      <p class="li-s" style="margin:0 0 10px">${meta[1]}</p>
+      <textarea id="wfReason" rows="3" placeholder="${meta[2]}" style="width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--panel-2);color:var(--ink);font:inherit;resize:vertical;box-sizing:border-box"></textarea>
+      <div class="actbtns" style="margin-top:12px;justify-content:flex-end">
+        <button class="btn ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn" onclick="confirmWf(${id},'${action}')">${meta[3]}</button>
+      </div>
+    </div>`;
+  setTimeout(()=>{const t=document.getElementById('wfReason');if(t)t.focus();},50);
+}
+function confirmWf(id,action){
+  const e=byId(id);if(!e)return;
+  const t=document.getElementById('wfReason');const reason=t?t.value.trim():'';
+  if(action==='sendback'&&!reason){toast('A reason is required to send back');return;}
+  const labels={advance:'Approved & advanced',sendback:'Sent back',evidence:'Requested evidence',delay:'Delayed',provide:'Provided evidence'};
+  const chain=wfChain(e);
+  const fromStage=chain[e.wfStage];                    // stage the action was taken at
+  if(action==='advance'){e.wfStage=Math.min(chain.length-1,e.wfStage+1);if(e.wfStage===chain.length-1){e.status='Approved';e.approvedCycle=CURRENT_CYCLE;}else e.status=chain[e.wfStage];}
+  else if(action==='sendback'){e.wfStage=Math.max(0,e.wfStage-1);e.status=chain[e.wfStage];}
+  const toStage=chain[e.wfStage];                      // stage it landed at after the move
+  const moved=(action==='advance'||action==='sendback');
+  e.wfHistory.unshift({when:new Date().toLocaleString(),by:ACTOR[viewRole]||viewRole,role:viewRole,from:fromStage,to:toStage,moved,action:labels[action],reason:reason||'—'});
+  // evidence & delay: no stage change — logged only
+  if(action==='evidence')e.evidenceReq={by:ACTOR[viewRole]||viewRole,role:viewRole,what:reason||'Additional evidence',when:new Date().toLocaleString(),status:'pending'};
+  if(action==='provide'&&e.evidenceReq){e.evidenceReq.status='provided';e.evidenceReq.providedBy=ACTOR[viewRole]||viewRole;e.evidenceReq.providedNote=reason||'Attached';e.evidenceReq.providedWhen=new Date().toLocaleString();}
+  closeModal();toast(e.name+' — '+labels[action]);render();
+}
+function promoWorkflow(){
+  const scopeWord={Supervisor:'team','Operations Manager':'teams & sites',HR:'business unit'}[viewRole]||'scope';
+  const inWf=EMP.filter(e=>e.wfStage>=0&&roleScope()(e));
+  const approvedAll=inWf.filter(e=>e.wfStage>=wfChain(e).length-1);
+  const active=inWf.filter(e=>e.wfStage<wfChain(e).length-1).sort((a,b)=>b.wfStage-a.wfStage);
+  const mine=active.filter(e=>STAGE_OWNER_MAP[wfChain(e)[e.wfStage]]===viewRole);
+  const others=active.filter(e=>STAGE_OWNER_MAP[wfChain(e)[e.wfStage]]!==viewRole);
+  const card=(e,actable)=>`<div class="card" style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">${avatar(e)}<div><div style="font-weight:650">${e.name}</div><div class="li-s">${e.cur} → ${e.tgt} · ${e.mgr}</div></div>
+      <span style="margin-left:auto;display:flex;gap:6px;align-items:center">${(()=>{if(e.wfStage>=wfChain(e).length-1){const r=openReqFor(e);return `<span class="tag tag-g" title="${r?'Filled from '+r.req:'Role filled'}">Role filled</span>`;}const r=openReqFor(e);return r?`<span class="tag tag-g" title="${r.count} opening(s) · ${r.site}">Open role: ${r.role} · ${r.req}</span>`:`<span class="tag tag-r" title="No open requisition for ${e.tgt} — blocks final approval">No open role for ${e.tgt}</span>`;})()}${eligPill(e)}</span></div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px">
+      ${wfChain(e).map((st,i)=>`<div style="flex:1;min-width:90px;text-align:center;padding:8px 6px;border-radius:8px;font-size:11px;font-weight:600;${i<e.wfStage?'background:var(--ready-bg);color:var(--ready)':i===e.wfStage?'background:var(--accent);color:#fff':'background:var(--panel-2);color:var(--ink-3)'}">${i<e.wfStage?'✓ ':''}${st}</div>${i<wfChain(e).length-1?'<span style="align-self:center;color:var(--ink-3)">→</span>':''}`).join('')}
+    </div>
+    ${e.evidenceReq?`<div class="li-s" style="margin-bottom:10px;padding:8px 10px;border-radius:8px;background:var(--panel-2)">${e.evidenceReq.status==='provided'?`✓ <b>Evidence provided</b> by ${e.evidenceReq.providedBy} — “${e.evidenceReq.providedNote}” · <a href="#" onclick="openEvidence(${e.id});return false" style="color:var(--accent)">view</a>`:`⏳ <b>Evidence requested</b> by ${e.evidenceReq.by} (${e.evidenceReq.role}) — “${e.evidenceReq.what}” · awaiting ${e.mgr}`}</div>`:''}
+    <div class="actbtns">
+      ${e.evidenceReq&&e.evidenceReq.status==='pending'&&viewRole==='Supervisor'?`<button class="btn sm" onclick="openWfModal(${e.id},'provide')">Provide evidence</button>`:''}
+      ${e.wfStage>=wfChain(e).length-1?`<span class="pill p-ready">Promotion approved</span>${e.approvedCycle?` <span class="tag tag-g">${e.approvedCycle}</span>`:''}`
+        :actable?`<button class="btn sm" onclick="openWfModal(${e.id},'advance')">Approve &amp; advance</button>${e.wfStage>0?`<button class="btn sm ghost" onclick="openWfModal(${e.id},'sendback')">Send back</button>`:''}${STAGE_OWNER_MAP[wfChain(e)[e.wfStage]]!=='Supervisor'?`<button class="btn sm ghost" onclick="openWfModal(${e.id},'evidence')">Request evidence</button>`:''}<button class="btn sm ghost" onclick="openWfModal(${e.id},'delay')">Delay</button>`
+        :`<span class="li-s">Awaiting <b>${STAGE_OWNER_MAP[wfChain(e)[e.wfStage]]}</b> (${wfChain(e)[e.wfStage]})</span>`}
+      <button class="btn sm ghost" onclick="openEvidence(${e.id})">View evidence</button>
+      <button class="btn sm ghost" onclick="openEmp(${e.id})">Open profile</button>
+    </div>
+    ${e.wfHistory&&e.wfHistory.length?`<div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px"><div class="li-s" style="font-weight:600;margin-bottom:6px">Audit trail</div>${e.wfHistory.map(h=>`<div class="li-s" style="margin-bottom:4px">${h.when} · <b>${h.by}</b> (${h.role}) · ${h.action}${h.moved!==undefined?(h.moved?` (${h.from} → ${h.to})`:` at ${h.from}`):` at ${h.stage}`}${h.reason&&h.reason!=='—'?` — “${h.reason}”`:''}</div>`).join('')}</div>`:''}
+    </div>`;
+  const wfSub=`<div class="subtabs"><div class="subtab ${wfView==='active'?'on':''}" onclick="wfView='active';render()">Active <span class="tag">${active.length}</span></div><div class="subtab ${wfView==='approved'?'on':''}" onclick="wfView='approved';render()">Approved <span class="tag tag-g">${approvedAll.length}</span></div></div>`;
+  if(wfView==='approved'){
+    const list=approvedAll.filter(e=>!wfCycle||e.approvedCycle===wfCycle);
+    const cycOpts=CYCLES.filter(c=>approvedAll.some(e=>e.approvedCycle===c));
+    return wfSub+`<div class="filters" style="margin-top:12px"><select onchange="wfCycle=this.value;render()"><option value="">All cycles</option>${cycOpts.map(c=>`<option ${wfCycle===c?'selected':''}>${c}</option>`).join('')}</select><span class="li-s" style="align-self:center">${list.length} approved in your ${scopeWord}</span></div>
+    ${list.map(e=>card(e,false)).join('')||`<div class="card"><p class="note">No approved promotions${wfCycle?' in '+wfCycle:''} in your ${scopeWord}.</p></div>`}`;
+  }
+  return wfSub+`<p class="note" style="margin-top:12px">Human-in-the-loop chain — each stage is owned by a role and gated by eligibility and business need; every action is auditable and captures a reason (mock state).</p>
+  <h3 style="margin:4px 0 10px">Awaiting your action <span class="tag">${mine.length}</span></h3>
+  ${mine.map(e=>card(e,true)).join('')||'<div class="card"><p class="note">Nothing is awaiting your action right now.</p></div>'}
+  <h3 style="margin:20px 0 10px">In progress in your ${scopeWord} <span class="tag">${others.length}</span></h3>
+  ${others.map(e=>card(e,false)).join('')||'<div class="card"><p class="note">No other cases in your scope.</p></div>'}`;
+}
+// ── Consistency Review — read-only anomaly tracker (future scope) ──
+function promoConsistency(){
+  const scopeWord={Supervisor:'team','Operations Manager':'teams & sites',HR:'business unit'}[viewRole]||'scope';
+  const pool=EMP.filter(e=>e.readiness>0&&roleScope()(e)&&e.tgt!=='—');
+  const roles=[...new Set(pool.map(e=>e.tgt))].sort();
+  if(!calCohort||!roles.includes(calCohort))calCohort=roles[0]||'';
+  const cands=pool.filter(e=>e.tgt===calCohort).sort((a,b)=>b.readiness-a.readiness);
+  const rec=e=>e.managerRec==='Recommend';
+  const flag=e=>rec(e)&&e.readiness<calBar?{t:'Below bar · recommended',c:'tag-r'}:(!rec(e)&&e.readiness>=calBar?{t:'Above bar · not recommended',c:'tag-a'}:null);
+  const flags=cands.filter(flag).length;
+  const byMgr={};cands.forEach(e=>{(byMgr[e.mgr]=byMgr[e.mgr]||[]).push(e);});
+  const cohortSel=`<select onchange="calCohort=this.value;render()">${roles.map(r=>`<option ${r===calCohort?'selected':''}>${r}</option>`).join('')}</select>`;
+  const barCtl=`<label class="li-s" style="align-self:center">Cohort bar <input type="number" min="0" max="100" value="${calBar}" onchange="calBar=+this.value||85;render()" style="width:60px;margin-left:6px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;background:var(--panel-2);color:var(--ink)"></label>`;
+  const block=(m,list)=>{const recd=list.filter(rec);const lenAvg=recd.length?Math.round(recd.reduce((a,e)=>a+e.readiness,0)/recd.length):null;const lbl=lenAvg===null?'':lenAvg<calBar-3?' · lenient':lenAvg>calBar+5?' · strict':' · aligned';
+    return `<div class="card" style="margin-bottom:14px"><h3>${m} <span class="tag">${list.length}</span> <span class="li-s" style="font-weight:400">· recommends at avg ${lenAvg!==null?lenAvg+'%':'—'}${lbl}</span></h3>
+    <div class="tw" style="box-shadow:none;margin:6px 0 0"><table><thead><tr><th>Candidate</th><th>Readiness</th><th>Confidence</th><th>Eligibility</th><th>Supervisor Rec</th><th>Flag</th></tr></thead><tbody>
+    ${list.map(e=>{const f=flag(e);return `<tr class="clk" onclick="openEmp(${e.id})"><td>${empCell(e)}</td><td class="num" style="min-width:100px">${scoreCell(e.readiness)}</td><td class="num">${e.conf}%</td><td>${eligPill(e)}</td><td style="font-size:12px">${e.managerRec}</td><td>${f?`<span class="tag ${f.c}">${f.t}</span>`:'<span class="li-s">—</span>'}</td></tr>`;}).join('')}
+    </tbody></table></div></div>`;};
+  return `<div class="card" style="border:1px dashed var(--accent);margin-bottom:16px">
+    <h3 style="display:flex;align-items:center;gap:8px;margin-top:0">🔭 Future scope — Consistency Review <span class="tag tag-a">Anomaly Tracker</span></h3>
+    <div class="grid g2" style="margin-top:8px">
+      <div><b style="font-size:12px">What it is</b><p class="li-s" style="margin:4px 0 0">A read-only tracker that flags where a supervisor's promotion recommendation <b>diverges from the objective Readiness</b> score, within a like-for-like cohort (same target role) — an early <b>rater-bias</b> signal. It does not rank agents or make decisions.</p></div>
+      <div><b style="font-size:12px">Why we need it</b><p class="li-s" style="margin:4px 0 0">Supervisors apply different bars, so one manager's "ready" isn't another's. Left unchecked that is unfair and hard to defend. This keeps promotions <b>consistent, fair and auditable</b> across teams.</p></div>
+      <div><b style="font-size:12px">How the panel uses it</b><p class="li-s" style="margin:4px 0 0">Each cycle the panel (Operations Manager + HR + supervisors) reviews the flagged mismatches and each supervisor's recommendation bar, discusses the outliers (<b>over-recommended</b> vs <b>missed talent</b>), and agrees the bar. Selection then happens in <b>Compare Candidates</b> and sign-off in the <b>Approval Workflow</b> — this screen is the diagnostic, not the decision.</p></div>
+      <div><b style="font-size:12px">Roadmap</b><p class="li-s" style="margin:4px 0 0">Trend across cycles · forced-distribution &amp; extreme-usage detection · demographic fairness checks (V3) · a link into the full <b>Bias &amp; Fairness</b> analytics.</p></div>
+    </div>
+    <p class="li-s" style="margin:10px 0 0;color:var(--ink-3)">Preview of the tracker below (mock).</p>
+  </div>
+  <div class="filters">${cohortSel}${barCtl}<span class="li-s" style="align-self:center">${cands.length} candidates · <b>${flags}</b> flagged · in your ${scopeWord}</span></div>
+  ${Object.keys(byMgr).length?Object.entries(byMgr).map(([m,list])=>block(m,list)).join(''):`<div class="card"><p class="note">No candidates for this cohort in your ${scopeWord}.</p></div>`}
+  `;
+}
+function promoQueue(){
+  const cols=[['READY','Ready to Approve'],['DEVELOPING','In Development'],['NOT YET','Not Yet Ready'],['INSUFFICIENT DATA','Insufficient Data']];
+  return `<div class="grid g4" style="align-items:start">
+  ${cols.map(([d,l])=>{const g=EMP.filter(e=>e.decision===d).sort((a,b)=>b.readiness-a.readiness);
+    return `<div class="card"><h3>${l} <span class="r"><span class="tag">${g.length}</span></span></h3>
+      ${g.map(e=>`<div class="list-item clk" style="cursor:pointer" onclick="openEmp(${e.id})">${avatar(e,'av')}<div><div class="li-t">${e.name}</div><div class="li-s">${e.readiness>0?e.readiness+'% · '+e.tgt:e.cur}</div></div>${e.attrition==='High'?'<span class="li-meta"><span class="tag tag-r">flight risk</span></span>':''}</div>`).join('')||'<p class="note">None</p>'}
+    </div>`;}).join('')}</div>`;
+}
+function cmpVerdict(e){
+  const live=[['Quality',e.umb.quality],['Conversation & Behavior',e.umb.behavior],['Coaching',e.umb.coaching],['Learning',e.umb.learning]].filter(x=>typeof x[1]==='number');
+  const sorted=[...live].sort((a,b)=>b[1]-a[1]);
+  const strengths=sorted.slice(0,2).map(x=>x[0]+' '+x[1]+'%').join(', ');
+  const weakest=sorted[sorted.length-1];
+  const decTxt={'READY':'promotion-ready','DEVELOPING':'developing','NOT YET':'not yet ready','INSUFFICIENT DATA':'insufficient data'}[e.decision]||e.decision;
+  let sugg;
+  if(e.compliance)sugg='⛔ <b>Blocked</b> — an open compliance flag must be cleared before any promotion.';
+  else if(!e.eligible)sugg='⏳ <b>Ready on evidence but ineligible</b> ('+e.eligReasons.join('; ')+') — resolve the prerequisite, then proceed.';
+  else if(e.decision==='READY')sugg='✅ <b>Recommend</b> — send to the approval workflow'+(e.attrition==='High'?'; <b>prioritise</b>, high flight-risk.':'.');
+  else if(e.decision==='DEVELOPING')sugg='📈 <b>Develop</b> '+(weakest?weakest[0]:'the weakest area')+', then re-review next cycle.';
+  else if(e.decision==='INSUFFICIENT DATA')sugg='📋 <b>Gather evidence</b> — too few evaluations to judge yet.';
+  else sugg='⏸ <b>Hold</b> — below the readiness bar this cycle.';
+  return `<p style="margin:0 0 6px">${e.name} is <b>${decTxt}</b> for <b>${e.tgt}</b> at <b>${e.readiness}%</b> (confidence ${e.conf}% · ${fmtTrend(e.trend)}).</p>
+  <p class="li-s" style="margin:0 0 4px"><b>Strengths:</b> ${strengths||'—'}.</p>
+  ${weakest?`<p class="li-s" style="margin:0 0 6px"><b>Watch:</b> ${weakest[0]} ${weakest[1]}%${e.trend==='falling'?' · trajectory declining':''}.</p>`:''}
+  <p style="margin:6px 0 0"><b>Suggestion:</b> ${sugg}</p>`;
+}
+function promoCompare(){
+  const scopeWord={Supervisor:'team','Operations Manager':'teams & sites',HR:'business unit'}[viewRole]||'scope';
+  const inScope=EMP.filter(e=>roleScope()(e));
+  const modeTabs=`<div class="subtabs">${[['position','By position'],['custom','Custom selection']].map(([k,l])=>`<div class="subtab ${cmpMode===k?'on':''}" onclick="cmpMode='${k}';render()">${l}</div>`).join('')}</div>`;
+  let cands=[],controls='',empty='';
+  if(cmpMode==='position'){
+    const roles=[...new Set(inScope.filter(e=>e.decision==='READY'&&e.tgt&&e.tgt!=='—').map(e=>e.tgt))].sort();
+    if(!cmpRole||!roles.includes(cmpRole))cmpRole=roles[0]||'';
+    cands=inScope.filter(e=>e.decision==='READY'&&e.tgt===cmpRole).sort((a,b)=>b.readiness-a.readiness);
+    controls=`<div class="filters"><select onchange="cmpRole=this.value;render()">${roles.length?roles.map(r=>`<option ${r===cmpRole?'selected':''}>${r}</option>`).join(''):'<option>—</option>'}</select><span class="li-s" style="align-self:center">${cands.length} READY candidate(s) for ${cmpRole||'—'} · in your ${scopeWord}</span></div>`;
+    empty='No READY candidates for this position in your '+scopeWord+'.';
+  }else{
+    cands=cmpList.map(id=>byId(id)).filter(Boolean);
+    const addable=inScope.filter(e=>!cmpList.includes(e.id)).sort((a,b)=>a.name.localeCompare(b.name));
+    controls=`<div class="filters"><select onchange="if(this.value){cmpList.push(+this.value);render();}"><option value="">+ Add agent…</option>${addable.map(e=>`<option value="${e.id}">${e.name} (${e.decision})</option>`).join('')}</select>${cmpList.length?`<button class="btn sm ghost" onclick="cmpList=[];render()">Clear</button>`:''}<span class="li-s" style="align-self:center">${cands.length} selected · pick any agents to compare</span></div>`;
+    empty='Add agents from the dropdown to compare.';
+  }
+  const body=cands.length?(()=>{
+    const two=cands.length===2;const colspan=2+cands.length; // Dimension + candidates + Advantage
+    const sticky='position:sticky;right:0;background:var(--panel);border-left:1px solid var(--border);text-align:center';
+    const adv=(vf,numeric)=>{
+      if(!numeric)return '—';
+      const nums=cands.map(vf).filter(v=>typeof v==='number');if(!nums.length)return '—';
+      const mx=Math.max(...nums);const leaders=cands.filter(e=>vf(e)===mx);
+      if(leaders.length===cands.length||leaders.length>1)return 'Tie';
+      const w=leaders[0];
+      if(two){const[a,b]=cands;return w.id===a.id?'← '+a.name:b.name+' →';}
+      return '→ '+w.name.split(' ')[0];
+    };
+    // decision metrics
+    const dRows=[{l:'Readiness',v:e=>e.readiness,f:v=>v+'%',n:true},{l:'Decision',v:e=>e.decision,f:v=>pill(v),n:false},{l:'Confidence',v:e=>e.conf,f:v=>v+'%',n:true},{l:'Trajectory',v:e=>e.trend,f:v=>fmtTrend(v),n:false},{l:'Eligibility',v:e=>e.eligible,f:(v,e)=>eligPill(e),n:false},{l:'Tenure (months)',v:e=>e.tenure,f:v=>v,n:false},{l:'Career Fit',v:e=>'',f:()=>'<span class="li-s" title="Configure role profiles to enable">— · set up</span>',n:false},{l:'Target Role',v:e=>e.tgt,f:v=>v,n:false},{l:'Supervisor',v:e=>e.mgr,f:v=>v,n:false},{l:'Supervisor Rec',v:e=>e.managerRec,f:v=>v,n:false}];
+    const dRow=row=>{let mx=null;if(row.n&&cands.length>1)mx=Math.max(...cands.map(e=>{const v=row.v(e);return typeof v==='number'?v:-Infinity;}));return `<tr><td>${row.l}</td>${cands.map(e=>{const v=row.v(e);const best=row.n&&mx!==null&&v===mx;return `<td class="num" style="text-align:center;${best?'color:var(--ready);font-weight:700':''}">${row.f(v,e)}</td>`;}).join('')}<td style="${sticky};font-weight:600">${adv(row.v,row.n)}</td></tr>`;};
+    // readiness breakdown (umbrellas) — live scored, projected greyed
+    const uRows=[{l:'Quality (Evaluation) · U1',v:e=>e.umb.quality,live:1},{l:'Conversation & Behavior · U2',v:e=>e.umb.behavior,live:1},{l:'Coaching & Growth · U3',v:e=>e.umb.coaching,live:1},{l:'Learning & Skill · U4',v:e=>e.umb.learning,live:1},{l:'Tenure · U5',v:e=>e.umb.tenure,live:1},{l:'Surveyed Satisfaction · U7',live:0},{l:'Handling Efficiency · U8',live:0},{l:'Schedule Reliability · U9',live:0}];
+    const uRow=row=>{
+      if(!row.live)return `<tr><td>${row.l} <span class="src src-mock">projected</span></td>${cands.map(()=>'<td style="text-align:center"><span class="li-s">connect to enable</span></td>').join('')}<td style="${sticky}">—</td></tr>`;
+      const vals=cands.map(row.v).filter(v=>typeof v==='number');const mx=vals.length?Math.max(...vals):null;
+      return `<tr><td>${row.l}</td>${cands.map(e=>{const v=row.v(e);if(typeof v!=='number')return '<td style="text-align:center"><span class="li-s">—</span></td>';const best=cands.length>1&&v===mx;return `<td class="num" style="text-align:center;${best?'color:var(--ready);font-weight:700':''}">${v}%</td>`;}).join('')}<td style="${sticky};font-weight:600">${adv(row.v,true)}</td></tr>`;
+    };
+    const headTh=cands.map(e=>`<th style="text-align:center;min-width:160px"><div style="font-weight:700">${e.name}</div><div class="li-s" style="font-weight:400">${e.cur} · ${e.mgr}</div><div style="margin-top:5px;display:flex;gap:10px;justify-content:center"><a href="#" onclick="openEvidence(${e.id});return false" style="color:var(--accent);font-size:11px">View evidence</a>${cmpMode==='custom'?`<a href="#" onclick="cmpList=cmpList.filter(x=>x!==${e.id});render();return false" style="color:var(--ink-3);font-size:11px">Remove</a>`:''}</div></th>`).join('');
+    const table=`<div class="tw" style="margin-top:16px"><table><thead><tr><th>Dimension</th>${headTh}<th style="${sticky}">Advantage</th></tr></thead><tbody>
+      ${dRows.map(dRow).join('')}
+      <tr><td colspan="${colspan}" style="background:var(--panel-2);font-weight:600;font-size:12px">Readiness breakdown (umbrellas) — live scored · projected greyed; best value highlighted</td></tr>
+      ${uRows.map(uRow).join('')}
+    </tbody></table></div>`;
+    const verdicts=`<div class="grid" style="grid-template-columns:repeat(${Math.min(cands.length,3)},1fr);margin-top:16px">${cands.map(e=>`<div class="card"><div class="ai"><h4>🤖 ${e.name} — recommendation</h4>${cmpVerdict(e)}</div></div>`).join('')}</div>`;
+    return table+verdicts;
+  })():`<div class="card"><p class="note">${empty}</p></div>`;
+  return `<p class="note" style="margin-top:0"><b>Compare candidates side by side.</b> <b>By position</b> auto-loads all <b>READY</b> candidates for a target role (across supervisors); <b>Custom selection</b> lets you add any agents you choose. Component scores that already roll into Readiness (Quality, Behavioral, etc.) are omitted; Confidence is shown so thin data isn't over-read.</p>
+  ${modeTabs}${controls}${body}`;
+}
+function verdict(e){
+  if(e.decision==='READY')return `${e.name} is promotion-ready for ${e.tgt} (${e.readiness}%). Strengths: ${e.skillGaps.length?COMP_DIMS.filter((d,i)=>e.comps[i]>=80).slice(0,2).join(', ')||'consistent quality':''}. Confidence ${e.conf}%.${e.attrition==='High'?' ⚠ High flight risk — act soon.':''}`;
+  if(e.decision==='DEVELOPING')return `${e.name} is developing (${e.readiness}%). Focus areas: ${e.skillGaps.map(g=>g.d).join(', ')}.`;
+  if(e.decision==='NOT YET')return `${e.name} is not yet ready.${e.compliance?' Open compliance flag is a hard block.':' Below the readiness threshold.'}`;
+  return `Insufficient data to assess ${e.name} — needs more evaluations.`;
+}
+function promoPacket(){
+  const e=selEmp;
+  const uW={'Quality (Evaluation) · U1':22,'Conversation & Behavior · U2':18,'Coaching & Growth · U3':14,'Learning & Skill · U4':8,'Tenure · U5':4};
+  const uLive=[['Quality (Evaluation) · U1',e.umb.quality],['Conversation & Behavior · U2',e.umb.behavior],['Coaching & Growth · U3',e.umb.coaching],['Learning & Skill · U4',e.umb.learning],['Tenure · U5',e.umb.tenure]];
+  const uProj=['Surveyed Satisfaction · U7','Handling Efficiency · U8','Schedule Reliability · U9'];
+  const breakdown=`<h3 style="margin-top:14px">Readiness breakdown (umbrellas) ${SRC.live}</h3>
+   <div class="tw" style="box-shadow:none"><table><thead><tr><th>Umbrella</th><th style="text-align:center">Score</th><th style="text-align:center">Weight</th></tr></thead><tbody>
+   ${uLive.map(([l,v])=>`<tr><td>${l}</td><td class="num" style="text-align:center">${typeof v==='number'?v+'%':'—'}</td><td class="num" style="text-align:center">${uW[l]}</td></tr>`).join('')}
+   ${uProj.map(l=>`<tr><td>${l} <span class="src src-mock">projected</span></td><td style="text-align:center"><span class="li-s">connect to enable</span></td><td class="num" style="text-align:center">—</td></tr>`).join('')}
+   </tbody></table></div>
+   <p class="li-s" style="margin-top:6px">Readiness = weighted average of the live umbrellas above = <b>${e.readiness}%</b> · evidence completeness <b>${e.evidence}%</b> · confidence <b>${e.conf}%</b>.</p>`;
+  const numL=uLive.filter(x=>typeof x[1]==='number');
+  const strengths=[...numL].sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0].split(' · ')[0]).join(', ');
+  const weakest=[...numL].sort((a,b)=>a[1]-b[1])[0];
+  const risks=[];
+  if(e.compliance)risks.push('Open compliance flag — must be cleared (hard block).');
+  if(!e.eligible)risks.push('Ineligible: '+e.eligReasons.join('; ')+'.');
+  if(e.trend==='falling')risks.push('Trajectory declining — confirm recent performance.');
+  if(e.conf<60)risks.push('Low confidence ('+e.conf+'%) — thin or ageing evidence; gather more before deciding.');
+  if(e.attrition==='High')risks.push('High flight-risk — prioritise or plan retention.');
+  if(weakest&&weakest[1]<70)risks.push('Development area: '+weakest[0].split(' · ')[0]+' ('+weakest[1]+'%).');
+  const reason=e.decision==='READY'
+    ?`Meets the bar for <b>${e.tgt}</b> at ${e.readiness}% (evidence ${e.evidence}%). Strengths: ${strengths||'—'}. ${bizNeed(e)?'An open requisition exists ('+(openReqFor(e)?openReqFor(e).req:'')+').':'No open requisition yet — a business need is required before promotion.'}`
+    :`Not put forward this cycle — ${e.decision==='DEVELOPING'?'developing toward the bar':e.decision==='INSUFFICIENT DATA'?'insufficient evaluation evidence to assess':'below the readiness bar'}.`;
+  const bizCase=`<h3 style="margin-top:14px">Business case</h3>
+   <div class="evi"><span><b style="font-weight:600">Reason to promote</b></span></div>
+   <p class="li-s" style="margin:2px 0 10px">${reason}</p>
+   <div class="evi"><span><b style="font-weight:600">Risks &amp; mitigations</b> ${SRC.cfg}</span></div>
+   ${risks.length?`<ul class="li-s" style="margin:4px 0 0;padding-left:18px">${risks.map(r=>`<li>${r}</li>`).join('')}</ul>`:'<p class="li-s" style="margin:2px 0 0">None flagged.</p>'}`;
+  return `<div class="actbtns" style="margin-bottom:14px"><button class="btn" onclick="window.print()">🖨 Print / Save PDF</button><button class="btn ghost" onclick="openExport()">Export…</button><select class="role-sel" onchange="selEmp=byId(+this.value);render()" style="margin-left:auto">${EMP.filter(x=>x.readiness>0).map(x=>`<option value="${x.id}" ${x.id===e.id?'selected':''}>${x.name}</option>`).join('')}</select></div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:14px">
+      <div class="avatar" style="width:52px;height:52px;font-size:18px">${e.initials}</div>
+      <div><div style="font-size:20px;font-weight:750">${e.name}</div><div class="li-s">${e.cur} → <b>${e.tgt}</b> · ${e.bu} · ${e.site} · Supervisor: ${e.mgr}</div></div>
+      <div style="margin-left:auto;text-align:center">${donut(e.readiness)}<div style="margin-top:6px">${pill(e.decision)}</div></div>
+    </div>
+    <div class="grid g3">
+      ${[['Readiness',e.readiness],['Confidence',e.conf],['Evidence',e.evidence]].map(([l,v])=>`<div class="card kpi" style="text-align:center"><div class="v" style="font-size:22px;color:${clr(v)}">${v}%</div><div class="l">${l}</div></div>`).join('')}
+    </div>
+    <div class="evi"><span><b style="font-weight:600">Eligibility</b> ${SRC.cfg}</span><span>${eligPill(e)}${e.eligReasons.length?` <span class="li-s">(${e.eligReasons.join(', ')})</span>`:''}</span></div>
+    <div class="evi"><span><b style="font-weight:600">Career Fit</b> ${SRC.cfg}</span><span class="li-s">— · set up</span></div>
+    <div class="evi"><span><b style="font-weight:600">Approval status</b></span><span>${e.wfStage>=0?`<span class="tag tag-a">${wfChain(e)[e.wfStage]}</span>`:'<span class="tag">Not submitted</span>'}</span></div>
+    <div class="ai" style="margin:14px 0"><h4>🤖 AI Recommendation &amp; Justification</h4>${cmpVerdict(e)}</div>
+    ${breakdown}
+    <h3 style="margin-top:14px">Supporting Evidence ${SRC.live}</h3>
+    <div class="evi"><span>Quality Evaluations</span><b>${e.evals} on record · avg ${e.q}%</b></div>
+    <div class="evi"><span>Coaching Impact (pre→post)</span><b style="color:${e.coachingImpact>=0?'var(--ready)':'var(--not)'}">${e.coachingImpact>0?'+':''}${e.coachingImpact} pts</b></div>
+    <div class="evi"><span>Trajectory</span><b>${fmtTrend(e.trend)}</b></div>
+    <div class="evi"><span>Consistency (quality steadiness)</span><b>${e.consistency}%</b></div>
+    <div class="evi"><span>Tenure</span><b>${e.tenure} months</b></div>
+    <div class="evi"><span>Certifications ${SRC.lms}</span><b>${e.certs.length}</b></div>
+    ${bizCase}
+  </div>`;
+}
+
+/* ---------------- EMPLOYEE ---------------- */
+function openEmp(id){selEmp=byId(id);current='employee';empTab='overview';renderNav();render();document.getElementById('main').scrollTop=0;}
+function openEvidence(id){selEmp=byId(id);current='employee';empTab='evidence';renderNav();render();document.getElementById('main').scrollTop=0;}
+function pEmployee(){
+  const e=selEmp;
+  const sel=`<select class="role-sel" style="margin-left:auto" onchange="selEmp=byId(+this.value);render()">${EMP.map(x=>`<option value="${x.id}" ${x.id===e.id?'selected':''}>${x.name}</option>`).join('')}</select>`;
+  const tabs=['overview|Overview','performance|Performance','competencies|Competencies','evidence|Evidence Locker','ai|AI Insights','career|Career Journey','timeline|Timeline'];
+  return head('Employee Workspace',e.cur+' · '+e.site,'Home › Employee › '+e.name,sel)+
+   `<div class="subtabs">${tabs.map(t=>{const[k,l]=t.split('|');return`<div class="subtab ${empTab===k?'on':''}" onclick="empTab='${k}';render()">${l}</div>`;}).join('')}</div>`+
+   ({overview:eOverview,performance:ePerf,competencies:eComp,evidence:eEvidence,ai:eAI,career:eCareer,timeline:eTimeline}[empTab])(e);
+}
+function eOverview(e){
+  return `<div class="grid g3" style="grid-template-columns:1fr 1fr 1fr">
+    <div class="card"><h3>Employee Information</h3>
+      <div class="evi"><span>Current Role</span><b>${e.cur}</b></div>
+      <div class="evi"><span>Career Goal</span><b>${e.tgt}</b></div>
+      <div class="evi"><span>Reporting Manager</span><b>${e.mgr}</b></div>
+      <div class="evi"><span>Business Unit</span><b>${e.bu}</b></div>
+      <div class="evi"><span>Tenure ${SRC.hris}</span><b>${e.tenure} mo</b></div>
+      <div class="evi"><span>Location</span><b>${e.site}</b></div>
+    </div>
+    <div class="card" style="text-align:center"><h3>Promotion Readiness ${SRC.live}</h3>${donut(e.readiness)}<div style="margin-top:10px">${pill(e.decision)}</div><div class="li-s" style="margin-top:8px">Confidence ${e.conf}% · ${fmtTrend(e.trend)}</div></div>
+    <div class="card"><h3>Readiness Summary</h3>
+      ${[['Promotion Readiness',e.readiness,'live'],['Career Fit',e.careerFit,'cfg'],['Leadership',e.leadership,'ml'],['Learning Progress',e.learnProg,'lms'],['AI Confidence',e.conf,'ml']].map(([l,v,s])=>`<div style="margin:11px 0"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>${l} ${SRC[s]}</span><b>${v}%</b></div>${bar(v)}</div>`).join('')}
+    </div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Eligibility ${SRC.cfg} <span class="r">${SRC.hris}</span></h3>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">${eligPill(e)}<span class="li-s">Assessed independently of readiness (Ch 8.6)</span></div>
+      ${[['Minimum tenure (6 mo)',e.tenure>=6||e.readiness===0],['Mandatory certification',e.certs.length>0],['Compliance clear',!e.compliance],['Has evaluations',e.evals>0]].map(([l,ok])=>`<div class="evi"><span>${l}</span><span class="${ok?'':''}">${ok?'<span class="tag tag-g">✓ met</span>':'<span class="tag tag-r">✗ not met</span>'}</span></div>`).join('')}
+      ${e.eligReasons.length?`<div class="risk-alert" style="margin-top:10px;background:var(--not-bg);border:1px solid #dc262640;border-radius:8px;padding:9px 12px;font-size:12px">⛔ ${e.eligReasons.join(' · ')}</div>`:''}
+    </div>
+    <div class="card"><h3>Career Aspiration &amp; Manager Notes ${SRC.cfg}</h3>
+      <div class="evi"><span>Employee career goal</span><b>${e.aspiration}</b></div>
+      <div style="display:flex;gap:6px;margin:10px 0"><input id="noteInput" placeholder="Add a manager note…" style="flex:1;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:12.5px;color:var(--ink)" onkeydown="if(event.key==='Enter')addNote(${e.id})"><button class="btn sm" onclick="addNote(${e.id})">Add</button></div>
+      ${e.managerNotes.map(n=>`<div class="list-item"><div class="li-ic">${icon('employee',15)}</div><div><div class="li-t" style="font-weight:500">${n.t}</div><div class="li-s">${n.by} · ${n.when}</div></div></div>`).join('')||'<p class="note">No notes yet.</p>'}
+      <p class="note">Aspirations &amp; notes are write-back inputs (employee/manager) — stored, not measured.</p>
+    </div>
+  </div>
+  <div class="card"><div class="ai"><h4>🤖 Summary</h4><p>${verdict(e)}</p></div></div>`;
+}
+function addNote(id){const inp=document.getElementById('noteInput');if(!inp||!inp.value.trim())return;byId(id).managerNotes.unshift({by:'Rachel Torres',when:'just now',t:inp.value.trim()});render();toast('Note added');}
+function ePerf(e){
+  return `<div class="grid g2">
+    <div class="card"><h3>Quality &amp; CSAT Trend <span class="r">${SRC.live} ${SRC.voc}</span></h3>${lineChart([e.wf.quality,e.wf.csat],['Quality (NIA)','CSAT (VoC·mock)'],['var(--accent)','var(--dev)'])}</div>
+    <div class="card"><h3>Productivity &amp; Attendance <span class="r">${SRC.pm} ${SRC.wfm}</span></h3>${lineChart([e.wf.productivity,e.wf.attendance],['Productivity (PM·mock)','Attendance (WFM·mock)'],['var(--accent-2)','var(--live)'])}</div>
+  </div>
+  <div class="grid g3">
+    <div class="card"><h3>Coaching Impact ${SRC.live}</h3><div style="font-size:26px;font-weight:750;color:${e.coachingImpact>=0?'var(--ready)':'var(--not)'}">${e.coachingImpact>0?'+':''}${e.coachingImpact} pts</div><div class="li-s">pre → post first coaching</div></div>
+    <div class="card"><h3>Compliance ${SRC.grc}</h3><div style="font-size:26px;font-weight:750;color:${e.compliance?'var(--not)':'var(--ready)'}">${e.compliance?'Flagged':'Clear'}</div><div class="li-s">${e.compliance?'Open incident — hard block':'No open incidents'}</div></div>
+    <div class="card"><h3>Attrition Risk ${SRC.ml}</h3><div style="font-size:26px;font-weight:750;color:${e.attrition==='High'?'var(--not)':e.attrition==='Medium'?'var(--dev)':'var(--ready)'}">${e.attrition}</div><div class="li-s">rule-based proxy</div></div>
+  </div>`;
+}
+function eComp(e){
+  return `<div class="grid g2">
+   <div class="card"><h3>Competency Assessment ${SRC.live} <span class="r">+ mock axes</span></h3>
+     <div class="spider-wrap"><div>${radar(e.comps)}</div>
+     <div style="flex:1;min-width:180px">${COMP_DIMS.map((d,i)=>`<div style="display:flex;justify-content:space-between;font-size:12px;margin:7px 0"><span>${d} ${COMP_SRC[i]==='mock'?SRC.hris:''}</span><b style="color:${clr(e.comps[i])}">${e.comps[i]}</b></div>`).join('')}</div></div>
+     <p class="note">Communication, Coaching, Customer Focus &amp; Ownership map to NIA/Enlighten. Leadership, Problem Solving, Collaboration &amp; Learning Agility have no native source yet (mock).</p>
+   </div>
+   <div class="card"><h3>Skill Gaps &amp; Recommended Focus ${SRC.ml}</h3>
+     ${e.skillGaps.map(g=>`<div class="evi"><span>${g.d} ${g.src==='mock'?SRC.hris:''}</span><span class="tag ${g.v<60?'tag-r':''}">${g.v}%</span></div>`).join('')}
+     <div class="ai" style="margin-top:12px"><h4>Development plan</h4><p>Prioritise ${e.skillGaps[0]?.d}. Suggested path routed to Learning Workspace.</p></div>
+   </div>
+  </div>`;
+}
+function eEvidence(e){
+  const sources=[['Quality Evaluations',e.evals+' evals · avg '+e.q+'%','live'],['Coaching Sessions',(e.q>0?Math.max(1,Math.round(e.evals/2)):0)+' sessions','live'],['Interaction Analytics','cross-talk, silence, FCR proxy','ia'],['Customer Feedback','CSAT / NPS','voc'],['Recognition','peer & manager kudos','hris'],['Certifications',e.certs.length+' earned','lms'],['Performance Reviews','annual cycle','hris'],['Manager Notes','free-text log','cfg']];
+  return `${e.evidenceReq?`<div class="card" style="margin-bottom:16px;border:1px solid var(--accent)"><h3>Requested evidence</h3><div class="evi"><span><b style="font-weight:600">${e.evidenceReq.what}</b><div class="li-s">Requested by ${e.evidenceReq.by} (${e.evidenceReq.role}) · ${e.evidenceReq.when}</div></span><span>${e.evidenceReq.status==='provided'?'<span class="tag tag-g">provided</span>':'<span class="tag tag-r">pending</span>'}</span></div>${e.evidenceReq.status==='provided'?`<div class="li-s" style="margin-top:8px">Provided by ${e.evidenceReq.providedBy} · ${e.evidenceReq.providedWhen} — “${e.evidenceReq.providedNote}”</div>`:''}</div>`:''}
+  <div class="card"><h3>Evidence Locker — ${e.name}</h3><p class="note" style="margin-top:0;margin-bottom:12px">Every recommendation must trace to evidence. Two of eight sources are live today; the rest require integration.</p>
+    ${sources.map(([t,d,s])=>`<div class="evi"><span><b style="font-weight:600">${t}</b> ${SRC[s]}<div class="li-s">${d}</div></span><span>${s==='live'?'<span class="tag tag-g">available</span>':'<span class="tag">pending integration</span>'}</span></div>`).join('')}
+  </div>
+  <div class="grid g4" style="margin-top:16px">
+    ${[['Evidence Completeness',e.q>0?60:15],['Confidence',e.conf],['Evidence Trust',e.q>0?Math.round(70+((e.id*13)%25)):40],['Audited Evals',e.q>0?(e.id%3):0]].map(([l,v])=>`<div class="card kpi" style="text-align:center"><div class="v" style="font-size:22px">${typeof v==='number'&&l!=='Audited Evals'?v+'%':v}</div><div class="l">${l}</div></div>`).join('')}
+  </div>`;
+}
+function eAI(e){
+  return `<div class="grid g2">
+    <div class="card"><h3>AI Recommendation Panel ${SRC.ml}</h3>
+      <div class="ai" style="margin-bottom:10px"><h4>Promotion ${SRC.live}</h4><p>${verdict(e)}</p></div>
+      <div class="ai" style="margin-bottom:10px"><h4>Career ${SRC.cfg}</h4><p>Best-fit next role: <b>${e.tgt}</b> (${e.careerFit}% fit). Alt paths available in Career Explorer.</p></div>
+      <div class="ai" style="margin-bottom:10px"><h4>Leadership ${SRC.ml}</h4><p>Leadership index ${e.leadership}%. ${e.leadership>=80?'Strong candidate for pipeline.':'Build via stretch assignments.'}</p></div>
+      <div class="ai"><h4>Development</h4><p>Close gaps in ${e.skillGaps.map(g=>g.d).join(', ')}.</p></div>
+    </div>
+    <div class="card"><h3>Reasoning &amp; Contributing Factors</h3>
+      <p class="note" style="margin-top:0">How the AI reached this conclusion:</p>
+      ${COMP_DIMS.map((d,i)=>`<div style="margin:9px 0"><div style="display:flex;justify-content:space-between;font-size:12px"><span>${d}</span><b>${e.comps[i]}</b></div>${bar(e.comps[i])}</div>`).slice(0,5).join('')}
+      <div style="margin-top:12px"><b style="font-size:12px">AI Confidence: ${e.conf}%</b>${bar(e.conf)}</div>
+      <button class="btn ghost sm" style="margin-top:12px" onclick="openAssist()">Ask the assistant why →</button>
+    </div>
+  </div>`;
+}
+function eCareer(e){
+  const path=e.cur==='Sr. Agent'?['Sr. Agent','Team Lead','QA Manager','Operations Manager']:['Agent','Sr. Agent','Team Lead','QA Manager'];
+  const cur=path.indexOf(e.cur);
+  return `<div class="card"><h3>Career Explorer ${SRC.cfg}</h3>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0">
+      ${path.map((r,i)=>`<div style="text-align:center">${i?'<span style="color:var(--ink-3);margin:0 4px">→</span>':''}<span class="tag ${i===cur?'tag-a':''}" style="padding:8px 12px;font-size:12px">${r}${i===cur?' (current)':''}</span></div>`).join('')}
+    </div>
+    <p class="note">Requires a modeled role ontology + competency requirements per role (Administration › Career Paths). Mock progression shown.</p>
+  </div>
+  <div class="grid g3">
+    <div class="card"><h3>Career Readiness ${SRC.cfg}</h3>${donut(e.careerFit)}</div>
+    <div class="card"><h3>Recommended Roles ${SRC.ml}</h3><div class="evi"><span>${e.tgt}</span><span class="tag tag-g">${e.careerFit}% fit</span></div><div class="evi"><span>QA Analyst</span><span class="tag">${Math.max(40,e.careerFit-18)}% fit</span></div><div class="evi"><span>Trainer</span><span class="tag">${Math.max(35,e.careerFit-25)}% fit</span></div></div>
+    <div class="card"><h3>Learning Roadmap ${SRC.lms}</h3>${e.skillGaps.map(g=>`<div class="evi"><span>${g.d}</span><span class="tag">course</span></div>`).join('')}</div>
+  </div>`;
+}
+function eTimeline(e){
+  const ev=[['Joined the company',e.tenure+' mo ago','hris'],['Completed onboarding training',(e.tenure-1)+' mo ago','lms'],['Earned '+(e.certs[0]||'certification'),(e.tenure-3)+' mo ago','lms'],['Coaching session — '+(e.skillGaps[0]?.d||'skills'),'3 mo ago','live'],['Recognition award','2 mo ago','hris'],['Latest evaluation · '+e.q+'%','2 wk ago','live']];
+  return `<div class="card"><h3>Career Timeline</h3>
+    ${ev.map(([t,d,s])=>`<div class="list-item"><div class="li-ic">${icon('career',15)}</div><div><div class="li-t">${t} ${SRC[s]}</div><div class="li-s">${d}</div></div></div>`).join('')}
+    <p class="note">Coaching &amp; evaluations are live (NIA). Joining, training, certifications, awards &amp; promotions need HRIS/LMS.</p>
+  </div>`;
+}
+
+/* ---------------- CAREER WORKSPACE ---------------- */
+function pCareer(){
+  const ready=EMP.filter(e=>e.readiness>=80);
+  return head('Career Workspace','Future opportunities, marketplace and pathing.','Home › Career')+mockBanner+
+  `<div class="grid g3">
+    ${kpi('Career Recommendations',12,'career','var(--accent)')}
+    ${kpi('Internal Openings',7,'career','var(--accent-2)')}
+    ${kpi('Avg Career Fit',Math.round(EMP.filter(e=>e.careerFit>0).reduce((s,e)=>s+e.careerFit,0)/EMP.filter(e=>e.careerFit>0).length)+'%','analytics','var(--dev)')}
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Career Marketplace ${SRC.hris}</h3>
+      ${[['Team Lead — Customer Care','Chicago',3],['QA Analyst — Quality','Dallas',5],['Trainer — L&D','Seattle',2],['Sr. Agent — Retention','Atlanta',6]].map(([r,loc,n])=>`<div class="evi"><span><b style="font-weight:600">${r}</b><div class="li-s">${loc}</div></span><span class="tag tag-a">${n} matches</span></div>`).join('')}
+      <p class="note">Requires internal job-req feed (ATS/HRIS).</p>
+    </div>
+    <div class="card"><h3>Top Career Matches ${SRC.ml}</h3>
+      ${ready.slice(0,5).map(e=>`<div class="list-item clk" onclick="openEmp(${e.id})">${avatar(e)}<div><div class="li-t">${e.name}</div><div class="li-s">→ ${e.tgt}</div></div><span class="li-meta"><span class="tag tag-g">${e.careerFit}% fit</span></span></div>`).join('')}
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px"><h3>Career-Path Recommendation Readiness (Ch 7.4 / 8.8)</h3>
+    <p class="note" style="margin-top:0">The platform only recommends a path when it has the evidence. Each destination is graded by data-readiness level.</p>
+    <div class="tw" style="box-shadow:none;margin:8px 0 0"><table><thead><tr><th>Career path</th><th>Level</th><th>Evidence we have</th><th>Additional data needed</th></tr></thead><tbody>
+    ${[['Team Leader','L1','QA, PM, NIA, WFM, Coaching','none'],['Operations Manager','L1','Leadership, Performance, Coaching','none'],['Quality Analyst','L1','QA, Compliance, IA','none'],['Trainer / L&D','L1','Coaching, LMS, Knowledge sharing','classroom obs (optional)'],['Workforce Mgmt','L2','Attendance, Adherence, Productivity','forecasting tools'],['Knowledge Mgmt','L2','KM contributions, QA, Coaching','KM platform metrics'],['Customer Success','L2','CSAT, NPS, usage','CRM / Gainsight'],['Product Ops','L2','VoC, feedback, NIA','Jira / Productboard'],['HR / Talent Acq.','L3','Communication, Coaching','ATS, HRIS'],['Sales Enablement','L3','Coaching, product knowledge','Sales CRM, GTM'],['AI Trainer','L3','QA, NIA','annotation data']].map(([p,lv,ev,need])=>{const st=lv==='L1'?'background:var(--ready-bg);color:var(--ready)':lv==='L2'?'background:var(--dev-bg);color:var(--dev)':'background:var(--accent-soft);color:var(--accent)';const lab=lv==='L1'?'L1 · recommend now':lv==='L2'?'L2 · conditional':'L3 · future';return `<tr><td class="dim">${p}</td><td><span class="tag" style="${st}">${lab}</span></td><td class="src">${ev}</td><td class="src">${need}</td></tr>`;}).join('')}
+    </tbody></table></div></div>`;
+}
+
+/* ---------------- TALENT ---------------- */
+function pTalent(){
+  const sub=`<div class="subtabs">${['ninebox|Nine-Box Grid','pipeline|Leadership Pipeline','bench|Bench & Succession'].map(x=>{const[k,l]=x.split('|');return`<div class="subtab ${talentSub===k?'on':''}" onclick="talentSub='${k}';render()">${l}</div>`;}).join('')}</div>`;
+  return head('Talent Workspace','Talent reviews, nine-box and succession.','Home › Talent')+mockBanner+sub+({ninebox:tNineBox,pipeline:tPipeline,bench:tBench}[talentSub])();
+}
+function tNineBox(){
+  // x = performance(readiness) bucket, y = potential bucket (0 low..2 high). grid rows top=high potential
+  const cells=Array.from({length:9},()=>[]);
+  EMP.filter(e=>e.readiness>0).forEach(e=>{const px=e.readiness>=80?2:e.readiness>=60?1:0;const py=e.potential>=80?2:e.potential>=55?1:0;const row=2-py;cells[row*3+px].push(e);});
+  const labels=['Enigma','Growth Employee','Star','Dilemma','Core Player','High Performer','Under-performer','Effective','Trusted Pro'];
+  const cls=[['nb-md','nb-hi','nb-hi'],['nb-lo','nb-md','nb-hi'],['nb-lo','nb-lo','nb-md']];
+  return `<div class="card"><h3>Nine-Box Grid ${SRC.live}<span class="r">${SRC.ml}</span></h3>
+   <div style="display:flex;gap:8px"><div style="writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;font-size:10px;color:var(--ink-2);letter-spacing:.1em;text-transform:uppercase">Potential →</div>
+   <div style="flex:1"><div class="ninebox">
+    ${cells.map((c,i)=>{const row=Math.floor(i/3),col=i%3;return`<div class="nb ${cls[row][col]}"><div>${labels[i]}</div><div class="chips">${c.map(e=>`<div class="ch" title="${e.name}" onclick="openEmp(${e.id})">${e.initials}</div>`).join('')}</div></div>`;}).join('')}
+   </div><div style="text-align:center;font-size:10px;color:var(--ink-2);letter-spacing:.1em;text-transform:uppercase;margin-top:6px">Performance / Readiness →</div></div></div>
+   <p class="note">Performance axis = live readiness. Potential axis is a proxy — a validated potential model needs promotion-outcome history.</p>
+  </div>`;
+}
+function tPipeline(){
+  const hipo=EMP.filter(e=>e.leadership>=78&&e.readiness>0).sort((a,b)=>b.leadership-a.leadership);
+  return `<div class="grid g2">
+    <div class="card"><h3>High Potentials &amp; Emerging Leaders ${SRC.ml}</h3>${hipo.map(e=>`<div class="list-item clk" onclick="openEmp(${e.id})">${avatar(e)}<div><div class="li-t">${e.name}</div><div class="li-s">${e.cur} → ${e.tgt}</div></div><span class="li-meta">Leadership <b>${e.leadership}%</b></span></div>`).join('')}</div>
+    <div class="card"><h3>Talent Pools ${SRC.cfg}</h3>
+      ${[['Leadership Pipeline',hipo.length],['Ready Now',stat().ready],['Emerging Talent',EMP.filter(e=>e.decision==='DEVELOPING').length],['Specialist Track',4]].map(([l,n])=>`<div class="evi"><span>${l}</span><span class="tag tag-a">${n}</span></div>`).join('')}
+    </div>
+  </div>`;
+}
+function tBench(){
+  const bySite=Object.entries(SITE).map(([k,v])=>{const g=EMP.filter(e=>e.siteKey==k);return{v,ready:g.filter(e=>e.decision==='READY').length,dev:g.filter(e=>e.decision==='DEVELOPING').length,total:g.length};});
+  const CATS=['Ready Now','Ready in 6 Months','Ready in 12 Months','Long-Term Potential','Emerging Talent'];
+  const catColor={'Ready Now':'var(--ready)','Ready in 6 Months':'var(--dev)','Ready in 12 Months':'var(--accent)','Long-Term Potential':'var(--accent-2)','Emerging Talent':'var(--ink-2)'};
+  return `<div class="card" style="margin-bottom:16px"><h3>Succession Readiness Categories ${SRC.ml} <span class="r">${SRC.hris}</span></h3>
+    <p class="note" style="margin-top:0">Time-to-ready classification (Ch 10.5) from readiness + trajectory. Firm dates need promotion-outcome history (HRIS).</p>
+    <div class="grid g5" style="margin-top:8px">
+    ${CATS.map(c=>{const g=EMP.filter(e=>e.successionCat===c);return `<div class="card kpi" style="text-align:center;padding:12px"><div class="v" style="font-size:24px;color:${catColor[c]}">${g.length}</div><div class="l">${c}</div></div>`;}).join('')}
+    </div>
+    <div style="margin-top:14px">${CATS.map(c=>{const g=EMP.filter(e=>e.successionCat===c);return g.length?`<div style="margin:10px 0"><div style="font-size:12px;font-weight:600;color:${catColor[c]};margin-bottom:5px">${c}</div><div style="display:flex;flex-wrap:wrap;gap:6px">${g.map(e=>`<span class="tag clk" style="cursor:pointer" onclick="openEmp(${e.id})">${e.name} · ${e.tgt}</span>`).join('')}</div></div>`:'';}).join('')}</div>
+  </div>
+  <div class="card"><h3>Bench Strength by Location ${SRC.live}</h3>
+  <table><thead><tr><th>Location</th><th>Ready</th><th>Developing</th><th>Bench Strength</th><th>Total</th></tr></thead><tbody>
+    ${bySite.map(s=>`<tr><td>${s.v}</td><td class="num" style="color:var(--ready)">${s.ready}</td><td class="num" style="color:var(--dev)">${s.dev}</td><td style="min-width:140px">${bar((s.ready+s.dev)/s.total*100)}</td><td class="num">${s.total}</td></tr>`).join('')}
+  </tbody></table>
+  <p class="note">Rolls up live readiness by NIA hierarchy. Real succession coverage also needs role-vacancy data (HRIS).</p></div>`;
+}
+
+/* ---------------- WORKFORCE ---------------- */
+function pWorkforce(){
+  const s=stat();
+  const depts=[...new Set(EMP.map(e=>e.bu))].map(bu=>{const g=EMP.filter(e=>e.bu===bu&&e.readiness>0);return{bu,avg:Math.round(g.reduce((a,e)=>a+e.readiness,0)/g.length),ready:g.filter(e=>e.decision==='READY').length};}).sort((a,b)=>b.avg-a.avg);
+  return head('Workforce Workspace','Executive talent intelligence.','Home › Workforce')+mockBanner+
+  `<div class="grid g4">
+    ${kpi('Promotion Rate',s.ready+'/'+s.total,'promotion','var(--accent)')}
+    ${kpi('Internal Mobility','18%','career','var(--accent-2)')}
+    ${kpi('Leadership Coverage','1.4×','workforce','var(--ready)')}
+    ${kpi('Avg Readiness',s.avg+'%','analytics','var(--dev)')}
+    ${kpi('Succession Coverage','62%','talent','var(--accent)')}
+    ${kpi('Career Movement',12,'career','var(--accent-2)')}
+    ${kpi('Attrition Risk',s.highrisk,'employee','var(--not)')}
+    ${kpi('Bench Strength',s.ready+s.dev,'talent','var(--ready)')}
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Department Rankings ${SRC.live}</h3><table><thead><tr><th>Department</th><th>Avg Readiness</th><th>Ready</th></tr></thead><tbody>
+      ${depts.map(d=>`<tr><td>${d.bu}</td><td style="min-width:150px">${scoreCell(d.avg)}</td><td class="num" style="color:var(--ready)">${d.ready}</td></tr>`).join('')}
+    </tbody></table></div>
+    <div class="card"><h3>Readiness Heat Map by Location ${SRC.live}<span class="r">${SRC.hris}</span></h3>
+      <table class="heat"><thead><tr><th class="rk">Location</th><th>Ready</th><th>Dev</th><th>Not Yet</th></tr></thead><tbody>
+      ${Object.entries(SITE).map(([k,v])=>{const g=EMP.filter(e=>e.siteKey==k);const cells=[g.filter(e=>e.decision==='READY').length,g.filter(e=>e.decision==='DEVELOPING').length,g.filter(e=>e.decision==='NOT YET').length];const cc=['var(--ready)','var(--dev)','var(--not)'];return`<tr><td class="rk">${v}</td>${cells.map((n,i)=>`<td style="background:${cc[i]}${n?'2e':'12'};color:${cc[i]}">${n}</td>`).join('')}</tr>`;}).join('')}
+    </tbody></table><p class="note">Longitudinal exec KPIs (promotion rate over time, internal mobility, career movement) need HRIS history — shown as illustrative figures.</p></div>
+  </div>`;
+}
+
+/* ---------------- LEARNING ---------------- */
+function pLearning(){
+  return head('Learning Workspace','Connect recommendations to development.','Home › Learning')+
+  `<div class="mockbanner" style="background:var(--not-bg);border-color:#dc262640">🔴 <b>No live data.</b> The entire Learning Workspace depends on an external LMS (Cornerstone / Workday Learning) — <b>V3</b>. Everything below is mock.</div>
+  <div class="grid g4">
+    ${kpi('Assigned Courses',34,'learning','var(--accent)')}
+    ${kpi('Completed','61%','learning','var(--ready)')}
+    ${kpi('Certifications',18,'learning','var(--accent-2)')}
+    ${kpi('Leadership Programs',3,'talent','var(--dev)')}
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Learning Progress ${SRC.lms}</h3>
+      ${EMP.filter(e=>e.readiness>0).slice(0,6).map(e=>`<div style="margin:11px 0"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>${e.name}</span><b>${e.learnProg}%</b></div>${bar(e.learnProg)}</div>`).join('')}
+    </div>
+    <div class="card"><h3>Skill-Gap → Course Mapping ${SRC.ml}</h3>
+      ${[['De-escalation','Communication gap'],['Technical Troubleshooting L2','Problem Solving'],['Leadership Essentials','Leadership'],['Coaching for Impact','Coaching']].map(([c,g])=>`<div class="evi"><span><b style="font-weight:600">${c}</b><div class="li-s">${g}</div></span><button class="btn sm ghost" onclick="toast('Assigned (mock)')">Assign</button></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+/* ---------------- ANALYTICS ---------------- */
+function pAnalytics(){
+  const reports=[['Promotion Analytics','live'],['Career Analytics','cfg'],['Leadership Analytics','ml'],['Learning Analytics','lms'],['Workforce Analytics','hris'],['Custom Reports','cfg']];
+  const lb=EMP.filter(e=>e.readiness>0).sort((a,b)=>b.readiness-a.readiness).slice(0,6);
+  return head('Analytics Workspace','Enterprise reporting and visualization.','Home › Analytics')+mockBanner+
+  `<div class="grid g3">${reports.map(([r,s])=>`<div class="card clk" style="cursor:pointer" onclick="toast('Opening ${r} (mock)')"><h3>${r} ${SRC[s]}</h3><div style="height:44px">${spark(EMP.slice(0,8).map(e=>e.readiness||30),'var(--accent)')}</div><button class="btn sm ghost" style="margin-top:8px">Open report</button></div>`).join('')}</div>
+  <div class="grid g2">
+    <div class="card"><h3>Readiness Distribution ${SRC.live}</h3>
+      ${[['READY',stat().ready,'var(--ready)'],['DEVELOPING',stat().dev,'var(--dev)'],['NOT YET',stat().not,'var(--not)'],['INSUFFICIENT',stat().insuf,'var(--insuf)']].map(([l,n,c])=>`<div style="margin:9px 0"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>${l}</span><b>${n}</b></div><div class="bar"><i style="width:${n/EMP.length*100}%;background:${c}"></i></div></div>`).join('')}
+    </div>
+    <div class="card"><h3>Readiness Leaderboard ${SRC.live}</h3>
+      ${lb.map((e,i)=>`<div class="list-item clk" onclick="openEmp(${e.id})"><b style="width:20px;color:var(--ink-3)">${i+1}</b>${avatar(e)}<div class="li-t">${e.name}</div><span class="li-meta"><b style="color:${clr(e.readiness)}">${e.readiness}%</b></span></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+/* ---------------- ADMIN ---------------- */
+function pAdmin(){
+  const mods=[['Role Management','Define personas & scope','employee'],['Permission Management','RBAC per workspace','admin'],['Promotion Rules','Thresholds & hard blockers','promotion'],['Career Paths','Role ontology & competencies','career'],['Competency Framework','Define the 8 axes','talent'],['AI Weights','Dimension weighting per role','analytics'],['Notification Rules','Events & routing','home'],['Approval Workflow','Multi-step approval chain','workforce'],['Organization Structure','Hierarchy & business units','workforce'],['Audit Logs','Decision & access trail','admin']];
+  return head('Administration','Configure the platform.','Home › Administration')+
+  `<div class="card" style="margin-bottom:16px"><h3>AI Dimension Weights ${SRC.cfg}</h3>
+    ${[['Quality',25],['Behavioral (AI)',20],['Coaching Impact',15],['Consistency',10],['Sentiment',10],['Tenure',10],['Self-Awareness',5],['Volume',5]].map(([l,w])=>`<div style="display:flex;align-items:center;gap:12px;margin:8px 0"><span style="width:150px;font-size:12px">${l}</span><div class="bar" style="flex:1"><i style="width:${w*3}%;background:var(--accent)"></i></div><b style="width:34px;text-align:right">${w}%</b></div>`).join('')}
+    <p class="note">Tunable per organisation / target role. These drive the live Promotion Readiness score.</p>
+  </div>
+  <div class="grid g3">${mods.map(([t,d,ic])=>`<div class="card clk" style="cursor:pointer" onclick="toast('${t} (mock)')"><div style="display:flex;gap:11px;align-items:center"><div class="li-ic">${icon(ic,16)}</div><div><div class="li-t">${t}</div><div class="li-s">${d}</div></div></div></div>`).join('')}</div>`;
+}
+
+/* ============================================================= GLOBAL COMPONENTS ============================================================= */
+// search
+const gs=document.getElementById('globalSearch'),sd=document.getElementById('searchDrop');
+gs.addEventListener('input',()=>{const q=gs.value.toLowerCase().trim();if(!q){sd.classList.remove('show');return;}
+  const m=EMP.filter(e=>e.name.toLowerCase().includes(q)||e.cur.toLowerCase().includes(q)||e.bu.toLowerCase().includes(q)||e.site.toLowerCase().includes(q)).slice(0,8);
+  sd.innerHTML=m.map(e=>`<a onclick="openEmp(${e.id});document.getElementById('searchDrop').classList.remove('show');document.getElementById('globalSearch').value=''">${e.name} <span style="color:var(--ink-3)">${e.cur} · ${e.site}</span></a>`).join('')||'<a style="color:var(--ink-3)">No matches</a>';
+  sd.classList.add('show');});
+document.addEventListener('click',e=>{if(!e.target.closest('.search'))sd.classList.remove('show');if(!e.target.closest('#notifBtn')&&!e.target.closest('#notifDrop'))document.getElementById('notifDrop').classList.remove('show');});
+
+// notifications
+const notifs=[['Emily Chen ready — high flight risk','AI · 10m','promotion'],['3 new career recommendations','Career · 1h','career'],['Coaching action overdue: Marcus Johnson','Workflow · 2h','employee'],['Derek Washington compliance flag','GRC · 3h','admin'],['Q3 calibration cycle opens Monday','HR · 1d','home']];
+document.getElementById('notifBtn').addEventListener('click',e=>{e.stopPropagation();const d=document.getElementById('notifDrop');d.classList.toggle('show');d.innerHTML=`<div class="dh">Notifications <span style="color:var(--accent);font-weight:600">${notifs.length}</span></div>`+notifs.map(([t,m,ic])=>`<div class="di"><div class="di-ic" style="background:var(--accent-soft);color:var(--accent)">${icon(ic,15)}</div><div><div style="font-weight:550">${t}</div><div class="li-s">${m}</div></div></div>`).join('');});
+
+// assistant
+let chat=[];
+function openAssist(){document.getElementById('overlay').classList.add('show');document.getElementById('slideover').classList.add('show');if(!chat.length)renderChat(true);}
+function closeAssist(){document.getElementById('overlay').classList.remove('show');document.getElementById('slideover').classList.remove('show');}
+document.getElementById('assistBtn').addEventListener('click',openAssist);
+document.getElementById('overlay').addEventListener('click',closeAssist);
+function renderChat(withSug){const b=document.getElementById('soBody');
+  b.innerHTML=chat.map(m=>`<div class="msg ${m.r}">${m.t}</div>`).join('');
+  if(withSug){b.innerHTML+=`<div class="msg a">Hi Rachel 👋 I can explain any promotion decision from the evidence. Try:</div><div class="so-sug">
+    <button onclick="ask('Why isn\\'t Marcus Johnson promotion-ready?')">Why isn't Marcus Johnson promotion-ready?</button>
+    <button onclick="ask('Who is ready for Team Lead?')">Who is ready for Team Lead?</button>
+    <button onclick="ask('Show evidence for Emily Chen')">Show evidence for Emily Chen's score</button>
+    <button onclick="ask('Compare Sarah Mitchell and James Okafor')">Compare Sarah Mitchell and James Okafor</button>
+  </div>`;}
+  b.scrollTop=b.scrollHeight;}
+function ask(q){document.getElementById('soInput').value=q;sendAssist();}
+function sendAssist(){const inp=document.getElementById('soInput');const q=inp.value.trim();if(!q)return;chat.push({r:'u',t:q});inp.value='';chat.push({r:'a',t:answer(q)});renderChat(false);}
+function findEmpInText(q){const lq=q.toLowerCase();return EMP.find(e=>lq.includes(e.name.toLowerCase())||lq.includes(e.name.split(' ')[0].toLowerCase()));}
+function answer(q){const lq=q.toLowerCase();
+  if(lq.includes('ready for')&&(lq.includes('team lead')||lq.includes('lead'))){const r=EMP.filter(e=>e.tgt==='Team Lead'&&e.decision==='READY');return `<b>${r.length}</b> ready for Team Lead: ${r.map(e=>e.name+' ('+e.readiness+'%)').join(', ')||'none yet'}.`;}
+  if(lq.includes('compare')){const names=EMP.filter(e=>lq.includes(e.name.split(' ')[0].toLowerCase()));if(names.length>=2){const[a,b]=names;return `<b>${a.name}</b> ${a.readiness}% vs <b>${b.name}</b> ${b.readiness}%. ${a.readiness>b.readiness?a.name:b.name} leads on readiness; ${a.leadership>b.leadership?a.name:b.name} on leadership (${Math.max(a.leadership,b.leadership)}%).`;}}
+  const e=findEmpInText(q);
+  if(e){
+    if(lq.includes('why')||lq.includes("isn't")||lq.includes('not ready')){return `${e.name} is <b>${e.decision}</b> (${e.readiness}%). ${e.compliance?'There is an open <b>compliance flag</b> — a hard block regardless of score. ':''}${e.trend==='falling'?'Trajectory is <b>declining</b>. ':''}Weakest areas: ${e.skillGaps.map(g=>g.d+' ('+g.v+'%)').join(', ')}.`;}
+    if(lq.includes('evidence')){return `Evidence for <b>${e.name}</b>: ${e.evals} quality evaluations (avg ${e.q}%), coaching impact ${e.coachingImpact>0?'+':''}${e.coachingImpact} pts, tenure ${e.tenure} mo, confidence ${e.conf}%. Live sources: evaluations + coaching. CSAT, certifications &amp; attendance are mock pending integration.`;}
+    if(lq.includes('improve')||lq.includes('develop')){return `${e.name} should focus on: ${e.skillGaps.map(g=>g.d).join(', ')}. I can route these to the Learning Workspace.`;}
+    return `${e.name} — ${e.cur} → ${e.tgt}. Readiness ${e.readiness}% (${e.decision}), leadership ${e.leadership}%, confidence ${e.conf}%.`;
+  }
+  return `I can answer about any of the ${EMP.length} employees — try naming one, e.g. "Why isn't Tom Bradley ready?" or "Who is ready for Team Lead?"`;
+}
+
+// export modal
+function openExport(){document.getElementById('modalOverlay').classList.add('show');const m=document.getElementById('modal');m.classList.add('show');
+  m.innerHTML=`<div class="mh">Export Center <button class="iconbtn" onclick="closeModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="mb">${[['Promotion Packet','Full evidence-backed case for one employee','promotion'],['Talent Review','Nine-box + succession for a team','talent'],['Executive Report','Workforce KPIs & trends','workforce'],['Employee Profile','Complete profile export','employee'],['Career Report','Pathing & recommendations','career']].map(([t,d,ic])=>`<div class="exp-item" onclick="doExport('${t}')"><div class="li-ic">${icon(ic,16)}</div><div><div class="li-t">${t}</div><div class="li-s">${d}</div></div></div>`).join('')}</div>`;}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show');document.getElementById('modal').classList.remove('show');}
+function doExport(t){closeModal();if(t==='Promotion Packet'){promoSub='packet';go('promotion');toast('Opened Promotion Packet — use Print/Save PDF');}else toast(t+' generated (mock)');}
+
+// theme + toast
+function toggleTheme(){const r=document.documentElement;const cur=r.getAttribute('data-theme');const next=cur==='dark'?'light':'dark';r.setAttribute('data-theme',next);try{localStorage.setItem('pip-theme',next);}catch(e){}}
+(function(){let s=null;try{s=localStorage.getItem('pip-theme');}catch(e){}if(s)document.documentElement.setAttribute('data-theme',s);else if(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.setAttribute('data-theme','dark');})();
+let toastT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);}
+
+// role switch — now genuinely role-aware (filters workspaces per permission matrix)
+document.getElementById('roleSel').addEventListener('change',e=>setRole(e.target.value));
+
+/* ============================================================= BOOT ============================================================= */
+document.getElementById('roleSel').value=viewRole;
+updateUser();
+renderNav();render();
+</script>
+</body>
+</html>
